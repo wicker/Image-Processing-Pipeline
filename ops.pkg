@@ -1,0 +1,64 @@
+// This file defines the functions for convolution operations
+//
+// Author   : Jenner Hanni <wicker>
+// Email    : jeh.wicker@gmail.com
+//
+// Date     : 4-June-2013
+// Language : SystemVerilog
+// Class    : ECE510 -- Professor Mark Faust
+//
+// License  : 3-clause BSD
+//
+
+package ops;
+
+  import defs::*;
+
+  function automatic pixel_t convolution (input int A,B,C,D,E,F,G,H,I, poi, height, width,
+                                          ref pixel_t image[TOTALPIXELS+1]);
+
+    // the pixel of interest is on the top row
+    if (poi >= 1 && poi <= width) begin
+
+      if (poi) begin          // top left corner pixel
+        convolution.y = (F*image[poi+1].y+H*image[poi+width].y+I*image[poi+width+1].y+E*image[poi].y)/4;
+      end
+      else if (poi == width) begin  // top right corner pixel
+        convolution.y = (D*image[poi-1].y+E*image[poi].y+G*image[poi+width-1].y+H*image[poi+width].y)/4;
+      end
+      else begin                   // top row non-corner pixel
+        convolution.y = (D*image[poi-1].y+image[poi+1].y+image[poi].y+image[poi+width-1].y+image[poi+width].y+image[poi+width+1].y)/6;
+      end
+
+    end
+
+    // the pixel of interest is not on the top or bottom rows
+    else if (poi > width && poi < (height*width - width)) begin
+
+      if ((poi-1) % width == 0) begin   // left edge
+        convolution.y = (B*image[poi-width].y+C*image[poi-width+1].y+E*image[poi].y+F*image[poi+1].y+H*image[poi+width].y+I*image[poi+width+1].y)/6;
+      end
+      else begin
+        convolution.y = (A*image[poi-width-1].y+B*image[poi-width].y+C*image[poi-width+1].y+D*image[poi-1].y+E*image[poi].y+F*image[poi+1].y+G*image[poi+width-1].y+H*image[poi+width].y+I*image[poi+width+1].y)/9;
+      end
+
+    end
+
+    // the pixel of interest is on the bottom row
+    else if (poi <= height*width) begin
+
+      if (poi == ((width * height) - (width + 1))) begin  // bottom left corner pixel
+        convolution.y = (B*image[poi-width].y+C*image[poi-width+1].y+E*image[poi].y+F*image[poi+1].y)/4;
+      end
+      else if (poi == height*width) begin                // bottom right corner pixel
+        convolution.y = (A*image[poi-width-1].y+B*image[poi-width].y+D*image[poi-1].y+E*image[poi].y)/4;
+      end
+      else begin                                     // bottom row non-corner pixel
+        convolution.y = (A*image[poi-width-1].y+B*image[poi-width].y+C*image[poi-width+1].y+D*image[poi-1].y+E*image[poi].y+F*image[poi+1].y)/6;
+      end
+    end
+
+
+  endfunction : convolution
+
+endpackage 

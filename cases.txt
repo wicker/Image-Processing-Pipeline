@@ -1,0 +1,303 @@
+    // test0  : blurred with x = 1 (baseline beej)
+
+    test0.filename = "output/output-baseline-blur.txt";
+    test0.flags.height = 320;
+    test0.flags.width  = 240;
+    test0.flags.totalpix = 240*320;
+    test0.flags.color_space = GRAY;
+    test0.flags.blur = 1;
+    test0.flags.blurval = 1;
+    test0.flags.edges = 0;
+    test0.flags.emboss = 0;
+
+    // test1  : emboss with x = 9 (baseline beej)
+
+    test1.filename = "output/output-baseline-demo.txt";
+    test1.flags.height = 320;
+    test1.flags.width  = 240;
+    test1.flags.totalpix = 240*320;
+    test1.flags.color_space = GRAY;
+    test1.flags.emboss = 1;
+    test1.flags.embossval = 9;
+    test1.flags.edges = 0;
+    test1.flags.blur = 0;
+
+    // test2  : edging with x = 9 (baseline beej)
+
+    test2.filename = "output/output-baseline-edges.txt";
+    test2.flags.height = 320;
+    test2.flags.width  = 240;
+    test2.flags.totalpix = 240*320;
+    test2.flags.color_space = GRAY;
+    test2.flags.edges = 1;
+    test2.flags.edgesval = 9;
+    test2.flags.blur = 0;
+    test2.flags.emboss = 0;
+
+    // test3  : straight-through operation
+
+    test3.filename = "output/output-baseline-straight-through.txt";
+    test3.flags.height = 320;
+    test3.flags.width  = 240;
+    test3.flags.totalpix = 240*320;
+    test3.flags.color_space = GRAY;
+    test3.flags.edges = 0;
+    test3.flags.blur = 0;
+    test3.flags.emboss = 0;
+
+    // test4 : random blur coefficient within range
+
+    test4.filename = "output/output-blur-random.txt";
+    test4.flags.height = 320;
+    test4.flags.width = 240;
+    test4.flags.totalpix = 240*320;
+    test4.flags.color_space = GRAY;
+    test4.flags.edges = 0;
+    test4.flags.blur = 1;
+    test4.flags.blurval = $urandom_range(1,10);
+    test4.flags.emboss = 0;
+
+    // test5 : random edges coefficient within range
+
+    test5.filename = "output/output-edges-random.txt";
+    test5.flags.height = 320;
+    test5.flags.width = 240;
+    test5.flags.totalpix = 240*320;
+    test5.flags.color_space = GRAY;
+    test5.flags.edges = 1;
+    test5.flags.edgesval = $urandom_range(1,10);
+    test5.flags.blur = 0;
+    test5.flags.emboss = 0;
+
+    // test6 : random emboss coefficient within range
+
+    test6.filename = "output/output-emboss-random.txt";
+    test6.flags.height = 320;
+    test6.flags.width = 240;
+    test6.flags.totalpix = 240*320;
+    test6.flags.color_space = GRAY;
+    test6.flags.edges = 0;
+    test6.flags.blur = 0;
+    test6.flags.emboss = 1;
+    test6.flags.embossval = $urandom_range(1,10);
+
+    // test7 : emboss coefficient using dist_exponential
+
+    test7.filename = "output/output-emboss-exponential.txt";
+    test7.flags.height = 320;
+    test7.flags.width = 240;
+    test7.flags.totalpix = 240*320;
+    test7.flags.color_space = GRAY;
+    test7.flags.edges = 0;
+    test7.flags.blur = 0;
+    test7.flags.emboss = 1;
+    test7.flags.embossval = $dist_exponential(1,2);
+
+    // test8 :
+
+    test8.filename = "output/output-emboss-9.txt";
+    test8.flags.height = 320;
+    test8.flags.width = 240;
+    test8.flags.totalpix = 240*320;
+    test8.flags.color_space = GRAY;
+    test8.flags.edges = 0;
+    test8.flags.blur = 0;
+    test8.flags.emboss = 1;
+    test8.flags.embossval = 9;
+
+    // test9 :
+
+    test9.filename = "output/output-emboss-18.txt";
+    test9.flags.height = 320;
+    test9.flags.width = 240;
+    test9.flags.totalpix = 240*320;
+    test9.flags.color_space = GRAY;
+    test9.flags.edges = 0;
+    test9.flags.blur = 0;
+    test9.flags.emboss = 1;
+    test9.flags.embossval = 18;
+
+    // test10 :
+
+    test10.filename = "output/output-emboss-27.txt";
+    test10.flags.height = 320;
+    test10.flags.width = 240;
+    test10.flags.totalpix = 240*320;
+    test10.flags.color_space = GRAY;
+    test10.flags.edges = 0;
+    test10.flags.blur = 0;
+    test10.flags.emboss = 1;
+    test10.flags.embossval = 27;
+
+    // test11 :
+
+    test11.filename = "output/output-emboss-36.txt";
+    test11.flags.height = 320;
+    test11.flags.width = 240;
+    test11.flags.totalpix = 240*320;
+    test11.flags.color_space = GRAY;
+    test11.flags.edges = 0;
+    test11.flags.blur = 0;
+    test11.flags.emboss = 1;
+    test11.flags.embossval = 36;
+
+    // test12 :
+
+    test12.filename = "output/output-blur-1.txt";
+    test12.flags.height = 320;
+    test12.flags.width = 240;
+    test12.flags.totalpix = 240*320;
+    test12.flags.color_space = GRAY;
+    test12.flags.edges = 0;
+    test12.flags.blur = 1;
+    test12.flags.blurval = 1;
+    test12.flags.emboss = 0;
+
+    // test13 :
+
+    test13.filename = "output/output-blur-4.txt";
+    test13.flags.height = 320;
+    test13.flags.width = 240;
+    test13.flags.totalpix = 240*320;
+    test13.flags.color_space = GRAY;
+    test13.flags.edges = 0;
+    test13.flags.blur = 1;
+    test13.flags.blurval = 4;
+    test13.flags.emboss = 0;
+
+    // test14 :
+
+    test14.filename = "output/output-blur-8.txt";
+    test14.flags.height = 320;
+    test14.flags.width = 240;
+    test14.flags.totalpix = 240*320;
+    test14.flags.color_space = GRAY;
+    test14.flags.edges = 0;
+    test14.flags.blur = 1;
+    test14.flags.blurval = 8;
+    test14.flags.emboss = 0;
+
+    // test15 :
+
+    test15.filename = "output/output-blur-14.txt";
+    test15.flags.height = 320;
+    test15.flags.width = 240;
+    test15.flags.totalpix = 240*320;
+    test15.flags.color_space = GRAY;
+    test15.flags.edges = 0;
+    test15.flags.blur = 1;
+    test15.flags.blurval = 14;
+    test15.flags.emboss = 0;
+
+    // test16 :
+
+    test16.filename = "output/output-edges-9.txt";
+    test16.flags.height = 320;
+    test16.flags.width = 240;
+    test16.flags.totalpix = 240*320;
+    test16.flags.color_space = GRAY;
+    test16.flags.edges = 1;
+    test16.flags.edgesval = 9;
+    test16.flags.blur = 0;
+    test16.flags.emboss = 0;
+
+    // test17 :
+
+    test17.filename = "output/output-edges-18.txt";
+    test17.flags.height = 320;
+    test17.flags.width = 240;
+    test17.flags.totalpix = 240*320;
+    test17.flags.color_space = GRAY;
+    test17.flags.edges = 1;
+    test17.flags.edgesval = 18;
+    test17.flags.blur = 0;
+    test17.flags.emboss = 0;
+
+    // test18 :
+
+    test18.filename = "output/output-edges-27.txt";
+    test18.flags.height = 320;
+    test18.flags.width = 240;
+    test18.flags.totalpix = 240*320;
+    test18.flags.color_space = GRAY;
+    test18.flags.edges = 1;
+    test18.flags.edgesval = 27;
+    test18.flags.blur = 0;
+    test18.flags.emboss = 0;
+
+    // test19 :
+
+    test19.filename = "output/output-edges-36.txt";
+    test19.flags.height = 320;
+    test19.flags.width = 240;
+    test19.flags.totalpix = 240*320;
+    test19.flags.color_space = GRAY;
+    test19.flags.edges = 1;
+    test19.flags.edgesval = 36;
+    test19.flags.blur = 0;
+    test19.flags.emboss = 0;
+
+    // test20 :
+
+    test20.filename = "output/output-blend-9-27.txt";
+    test20.flags.height = 320;
+    test20.flags.width = 240;
+    test20.flags.totalpix = 240*320;
+    test20.flags.color_space = GRAY;
+    test20.flags.edges = 1;
+    test20.flags.edgesval = 9;
+    test20.flags.blur = 0;
+    test20.flags.emboss = 1;
+    test20.flags.embossval = 27;
+
+    // test21 :
+
+    test21.filename = "output/output-blend-18-18.txt";
+    test21.flags.height = 320;
+    test21.flags.width = 240;
+    test21.flags.totalpix = 240*320;
+    test21.flags.color_space = GRAY;
+    test21.flags.edges = 1;
+    test21.flags.edgesval = 18;
+    test21.flags.blur = 0;
+    test21.flags.emboss = 1;
+    test21.flags.embossval = 18;
+
+    // test22 :
+
+    test22.filename = "output/output-blend-27-9.txt";
+    test22.flags.height = 320;
+    test22.flags.width = 240;
+    test22.flags.totalpix = 240*320;
+    test22.flags.color_space = GRAY;
+    test22.flags.edges = 1;
+    test22.flags.edgesval = 27;
+    test22.flags.blur = 0;
+    test22.flags.emboss = 1;
+    test22.flags.embossval = 9;
+
+    // test23 :
+
+    test23.filename = "output/output-blend-36-1.txt";
+    test23.flags.height = 320;
+    test23.flags.width = 240;
+    test23.flags.totalpix = 240*320;
+    test23.flags.color_space = GRAY;
+    test23.flags.edges = 1;
+    test23.flags.edgesval = 36;
+    test23.flags.blur = 0;
+    test23.flags.emboss = 1;
+    test23.flags.embossval = 1;
+
+    // test24 :
+
+    test24.filename = "output/output-blend-1-36.txt";
+    test24.flags.height = 320;
+    test24.flags.width = 240;
+    test24.flags.totalpix = 240*320;
+    test24.flags.color_space = GRAY;
+    test24.flags.edges = 1;
+    test24.flags.edgesval = 1;
+    test24.flags.blur = 0;
+    test24.flags.emboss = 36;
+    test24.flags.embossval = 9;

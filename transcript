@@ -1,0 +1,25 @@
+# vsim -c top 
+# //  Questa Sim
+# //  Version 10.2a linux Mar 15 2013
+# //
+# //  Copyright 1991-2013 Mentor Graphics Corporation
+# //  All Rights Reserved.
+# //
+# //  THIS WORK CONTAINS TRADE SECRET AND PROPRIETARY INFORMATION
+# //  WHICH IS THE PROPERTY OF MENTOR GRAPHICS CORPORATION OR ITS
+# //  LICENSORS AND IS SUBJECT TO LICENSE TERMS.
+# //
+# Loading sv_std.std
+# Loading work.defs(fast)
+# Loading work.ops(fast)
+# Loading work.top(fast)
+# Loading work.data_bus(fast)
+# ** Warning: In case 0 pixel 76558 is unknown.
+#    Time: 460863 ns  Scope: top.tb.#ublk#178839128#127.a2 File: testbench.sv Line: 176
+# ** Warning: In case 0 pixel 76798 is unknown.
+#    Time: 462303 ns  Scope: top.tb.#ublk#178839128#127.a2 File: testbench.sv Line: 176
+# ** Warning: In case 0 pixel 76799 is unknown.
+#    Time: 462309 ns  Scope: top.tb.#ublk#178839128#127.a2 File: testbench.sv Line: 176
+# ** Note: $finish    : testbench.sv(221)
+#    Time: 462315 ns  Iteration: 1  Instance: /top/tb
+# Testbench finished.

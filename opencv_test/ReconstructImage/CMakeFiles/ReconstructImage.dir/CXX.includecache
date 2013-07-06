@@ -1,0 +1,18 @@
+#IncludeRegexLine: ^[ 	]*#[ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/u/jehanni/SystemVerilog/final/opencv_test/ReconstructImage/ReconstructImage.cpp
+stdio.h
+-
+iostream
+-
+fstream
+-
+opencv2/opencv.hpp
+-
+

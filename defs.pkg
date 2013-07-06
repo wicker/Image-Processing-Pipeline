@@ -1,0 +1,80 @@
+// This file defines the defs package for a DSP DUT and testbench
+//
+// Author   : Jenner Hanni <wicker>
+// Email    : jeh.wicker@gmail.com
+//
+// Date     : 4-June-2013 
+// Language : SystemVerilog 
+// Class    : ECE510 -- Professor Mark Faust 
+//
+// License  : 3-clause BSD
+//  
+
+package defs;
+
+  parameter FALSE = 0;
+  parameter TRUE  = 1;
+
+  parameter GRAY  = 0;
+  parameter RGB   = 1;
+  parameter YCRCB = 2;
+
+  parameter HORZ  = 0;
+  parameter VERT  = 1;
+
+  // SET THESE ONLY
+  // THEY WILL TAKE EFFECT WHEN YOU COMPILE AND 
+  // WILL BE EFFECTIVE FOR THIS ENTIRE TEST RUN
+
+  parameter CONV_DIM = 3;
+  parameter TESTCASES = 1; 
+  parameter TOTALPIXELS = 320 * 240;
+  parameter COLORSPACE = GRAY;
+
+  //
+  // sets up clocking
+  //
+
+  parameter VID_CLK_CYCLE  = 74ns;
+  parameter VID_CLK_WIDTH  = VID_CLK_CYCLE/2;
+
+  parameter DSP_CLK_CYCLE  = 5ns;
+  parameter DSP_CLK_WIDTH  = DSP_CLK_CYCLE/2;
+
+  parameter REF_CLK_CYCLE  = 5ns;
+  parameter REF_CLK_WIDTH  = REF_CLK_CYCLE/2;
+
+  parameter IDLE_CLOCKS  = 1;
+
+  // these are structures for pixels and tests
+
+  typedef struct packed {logic [7:0] y; // use this to access r
+                         logic [7:0] u; // use this to access g
+                         logic [7:0] v; // use this to access b
+                        } pixel_t;
+
+  typedef struct packed { 
+    logic [8:0] height;  // max value of decimal 320 pixels high
+    logic [8:0] width;   // max value of decimal 320 pixels wide
+    logic [16:0] totalpix;  // width * height (max of 320*240 = 76800)
+    logic [1:0] color_space; // expects GRAY, RGB, or YCRCB 
+ 
+    logic blur;      // blur
+    int blurval;   // 
+    logic edges;     // find edges
+    int edgesval;  //  
+    logic emboss;    // emboss
+    int embossval; //  
+    logic flip;      // flip horizontally or vertically
+    int flipval;   // expects HORZ or VERT 
+    logic invert;    // invert colors 
+  } flags_t; 
+
+  typedef struct {
+    string filename;
+    flags_t flags;
+    pixel_t data [76800];
+  } test_array_t;
+
+endpackage
+

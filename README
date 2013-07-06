@@ -5,3 +5,6 @@ Jenner Hanni
 
 This project performs pixel-by-pixel convolution on a 2-dimensional image of any height and width. A user-defined type pixel_t is a three-channel struct which is passed onto the data bus and through the decoder, blur, edges, emboss, flip, invert, and encoder modules. The only modules which perform operations are blur, edges, and emboss. 
 
+Compiled using Mentor Questa.
+
+Released under the 3-clause BSD License.

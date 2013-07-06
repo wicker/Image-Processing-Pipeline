@@ -1,0 +1,10 @@
+cd input
+echo This is the grayscale version of the input image. Press any key to continue.
+./PrintPixels input-brokentop.png 240 320
+mv input.txt input-brokentop.txt
+cd ../
+vlog -sv defs.pkg dsp.sv dut.sv testbench.sv top.sv ops.pkg
+vsim -c top
+cd output
+echo This is the blur result. Hit any key to continue.
+./ReconstructImage output-baseline-blur.txt 240 320
