@@ -1,4 +1,5 @@
-IMAGE PROCESSING WITH CONVOLUTION
+Image Processing with Convolution 
+=================================
 
 Jenner Hanni
 <jeh.wicker@gmail.com>
