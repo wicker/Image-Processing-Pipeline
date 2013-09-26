@@ -1,7 +1,7 @@
 Image Processing with Convolution 
 =================================
 
-Jenner Hanni
+Jenner Hanni  
 <jeh.wicker@gmail.com>
 
 **SystemVerilog**
