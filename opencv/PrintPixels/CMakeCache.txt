@@ -155,10 +155,10 @@ CMAKE_VERBOSE_MAKEFILE:BOOL=FALSE
 OpenCV_DIR:PATH=/usr/share/OpenCV
 
 //Value Computed by CMake
-PrintPixels_BINARY_DIR:STATIC=/u/jehanni/SystemVerilog/final/opencv_test/PrintPixels
+PrintPixels_BINARY_DIR:STATIC=.
 
 //Value Computed by CMake
-PrintPixels_SOURCE_DIR:STATIC=/u/jehanni/SystemVerilog/final/opencv_test/PrintPixels
+PrintPixels_SOURCE_DIR:STATIC=.
 
 
 ########################
