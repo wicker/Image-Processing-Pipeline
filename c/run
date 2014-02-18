@@ -1,0 +1,18 @@
+#!/bin/bash
+# Image processing script
+# Jenner Hanni <jeh.wicker@gmail.com> 
+
+# Prep the image by turning it into a text file
+cd input
+echo This is the grayscale version of the input image. Press any key to continue.
+./PrintPixels input-brokentop.png 240 320
+mv input.txt input-brokentop.txt
+cd ../
+
+# Pass the image to the program
+
+
+# Reconstruct the output from text file to an image
+cd output
+echo This is the blur result. Hit any key to continue.
+./ReconstructImage output-baseline-blur.txt 240 320
