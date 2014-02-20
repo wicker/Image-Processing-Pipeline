@@ -3,13 +3,13 @@
 
 #define ARGS 3
 #define DATAPOINTS 76800
-#define ROWS 240
-#define COLS 320
+#define ROWS 320 
+#define COLS 240
 
 int instructions();
 int exit_program(int);
 void print_array(int * data);
-int convolution(int a,int b,int c,int d,int e,int f,int g,int h,int i, int poi,int *data);
+int convolution(int a,int b,int c,int d,int e,int f,int g,int h,int i, int poi,int row, int col, int *data);
 
 // take arguments for sort number and data file
 int main(int argc, char *argv[]) {
@@ -40,30 +40,30 @@ int main(int argc, char *argv[]) {
   switch(convnum) {
     case 1:
       printf("#1 - Blur\n");
-      i = 0;
-      for (row = 0; row < ROWS; row++) {
-        for (col = 0; col < COLS; col++) {
-          out_array[i] = convolution(1,1,1,1,1,1,1,1,1,i,in_array);
+      i = 1;
+      for (row = 1; row <= ROWS; row++) {
+        for (col = 1; col <= COLS; col++) {
+          out_array[i] = convolution(1,1,1,1,1,1,1,1,1,i,row,col,in_array);
           i++;
         }
       }
       break;
     case 2:
       printf("#2 - Edge\n");
-      i = 0;
+      i = 1;
       for (row = 0; row < ROWS; row++) {
         for (col = 0; col < COLS; col++) {
-          out_array[i] = convolution(0,1,0,1,-4,1,0,1,0,i,in_array);
+          out_array[i] = convolution(0,1,0,1,-4,1,0,1,0,i,row,col,in_array);
           i++;
         }
       }
       break;
     case 3:
       printf("#3 - Emboss\n");
-      i = 0;
+      i = 1;
       for (row = 0; row < ROWS; row++) {
         for (col = 0; col < COLS; col++) {
-          out_array[i] = convolution(-2,-1,0,-1,1,1,0,1,2,i,in_array);
+          out_array[i] = convolution(-2,-1,0,-1,1,1,0,1,2,i,row,col,in_array);
           i++;
         }
       }
@@ -86,15 +86,15 @@ int main(int argc, char *argv[]) {
   exit_program(0);
 }
 
-int convolution(int a,int b,int c,int d,int e,int f,int g,int h,int i,int poi,int *data) {
-  int t = 0;
+int convolution(int a,int b,int c,int d,int e,int f,int g,int h,int i,int poi,int row, int col, int *data) {
 
-  if (poi < 322 || poi > 76478) 
-    t = poi;
+  int t = 0;
+  if (row == 1 || row == ROWS || col == 1 || col == COLS) 
+    t = data[poi];
   else {
-    t = a*data[poi-ROWS-1] + b*data[poi-ROWS] + c*data[poi-ROWS+1] 
+    t = a*data[poi-COLS-1] + b*data[poi-COLS] + c*data[poi-COLS+1] 
       + d*data[poi-1] + e*data[poi] + f*data[poi+1]
-      + g*data[poi+ROWS-1] + h*data[poi+ROWS] + i*data[poi+ROWS+1];
+      + g*data[poi+COLS-1] + h*data[poi+COLS] + i*data[poi+COLS+1];
     t = t/9;
   }
   return t;
