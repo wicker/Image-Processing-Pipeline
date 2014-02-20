@@ -2,17 +2,19 @@
 # Image processing script
 # Jenner Hanni <jeh.wicker@gmail.com> 
 
+# INPUTS
+# $1 input image (image.png)
+# $2 convolution kernel size (3,5)
+# $3 image width (240)
+# $4 image height (320)
+
 # Prep the image by turning it into a text file
-cd input
-echo This is the grayscale version of the input image. Press any key to continue.
-./PrintPixels input-brokentop.png 240 320
-mv input.txt input-brokentop.txt
-cd ../
+./input/PrintPixels $1 $3 $4
 
 # Pass the image to the program
-
+# TO DO: get the 240 320 out of hard coded main.c and accept args from here
+gcc main.c -o main
+./main input.txt $3 $4
 
 # Reconstruct the output from text file to an image
-cd output
-echo This is the blur result. Hit any key to continue.
-./ReconstructImage output-baseline-blur.txt 240 320
+./output/ReconstructImage output.txt $3 $4
