@@ -9,7 +9,13 @@
 int instructions();
 int exit_program(int);
 void print_array(int * data);
-int convolution(int a,int b,int c,int d,int e,int f,int g,int h,int i, int poi,int row, int col, int *data);
+int conv_3x3(int a,int b,int c,int d,int e,int f,int g,int h,int i, int poi,int row, int col, int *data);
+int conv_5x5(int a,int b,int c,int d,int e,
+             int f,int g,int h,int i,int j,
+             int k,int l,int m,int n,int o,
+             int p,int q,int r,int s,int t,
+             int u,int v,int w,int x,int y,
+             int poi,int row, int col, int *data);
 
 // take arguments for sort number and data file
 int main(int argc, char *argv[]) {
@@ -43,7 +49,7 @@ int main(int argc, char *argv[]) {
       i = 1;
       for (row = 1; row <= ROWS; row++) {
         for (col = 1; col <= COLS; col++) {
-          out_array[i] = convolution(1,1,1,1,1,1,1,1,1,i,row,col,in_array);
+          out_array[i] = conv_5x5(1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,i,row,col,in_array);
           i++;
         }
       }
@@ -51,9 +57,9 @@ int main(int argc, char *argv[]) {
     case 2:
       printf("#2 - Edge\n");
       i = 1;
-      for (row = 0; row < ROWS; row++) {
-        for (col = 0; col < COLS; col++) {
-          out_array[i] = convolution(0,1,0,1,-4,1,0,1,0,i,row,col,in_array);
+      for (row = 1; row <= ROWS; row++) {
+        for (col = 1; col <= COLS; col++) {
+          out_array[i] = conv_3x3(0,1,0,1,-4,1,0,1,0,i,row,col,in_array);
           i++;
         }
       }
@@ -61,9 +67,9 @@ int main(int argc, char *argv[]) {
     case 3:
       printf("#3 - Emboss\n");
       i = 1;
-      for (row = 0; row < ROWS; row++) {
-        for (col = 0; col < COLS; col++) {
-          out_array[i] = convolution(-2,-1,0,-1,1,1,0,1,2,i,row,col,in_array);
+      for (row = 1; row <= ROWS; row++) {
+        for (col = 1; col <= COLS; col++) {
+          out_array[i] = conv_3x3(-2,-1,0,-1,1,1,0,1,2,i,row,col,in_array);
           i++;
         }
       }
@@ -86,8 +92,7 @@ int main(int argc, char *argv[]) {
   exit_program(0);
 }
 
-int convolution(int a,int b,int c,int d,int e,int f,int g,int h,int i,int poi,int row, int col, int *data) {
-
+int conv_3x3(int a,int b,int c,int d,int e,int f,int g,int h,int i,int poi,int row, int col, int *data) {
   int t = 0;
   if (row == 1 || row == ROWS || col == 1 || col == COLS) 
     t = data[poi];
@@ -98,6 +103,26 @@ int convolution(int a,int b,int c,int d,int e,int f,int g,int h,int i,int poi,in
     t = t/9;
   }
   return t;
+}
+
+int conv_5x5(int a,int b,int c,int d,int e,
+             int f,int g,int h,int i,int j,
+             int k,int l,int m,int n,int o,
+             int p,int q,int r,int s,int t,
+             int u,int v,int w,int x,int y,
+             int poi,int row, int col, int *data) {
+  int out = 0;
+  if (row <= 2 || row >= ROWS-1 || col <= 1 || col >= COLS-1) 
+    out = data[poi];
+  else {
+    out = a*data[poi-2*COLS-2] + b*data[poi-2*COLS-1] + c*data[poi-2*COLS] + d*data[poi-2*COLS+1] + e*data[poi-2*COLS+2]
+      + f*data[poi-COLS-2] + g*data[poi-COLS-1] + h*data[poi-COLS] + i*data[poi-COLS+1] + j*data[poi-COLS+2]
+      + k*data[poi-2] + l*data[poi-1] + m*data[poi] + n*data[poi+1] + o*data[poi+2]
+      + p*data[poi+COLS-2] + q*data[poi+COLS-1] + r*data[poi+COLS] + s*data[poi+COLS+1] + t*data[poi+COLS+2]
+      + u*data[poi+2*COLS-2] + v*data[poi+2*COLS-1] + w*data[poi+2*COLS] + x*data[poi+2*COLS+1] + y*data[poi+2*COLS+2];
+    out = out/25;
+  }
+  return out;
 }
 
 void print_array(int * data) {
