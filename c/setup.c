@@ -168,12 +168,11 @@ int main(int argc, char *argv[]) {
 int convolution(int *inpixels,int *params,int *outpixels) {
 
   int t = 0;
-  int i,row,col,m,n,x,y;
+  int i,row,col,m,n,x,y,k;
   int rows = params[1];
   int cols = params[2]; 
   int krow = params[4];
   int kcol = params[4];
-  int k = 6;
 
   printf("rows: %d\tcols: %d\n",rows,cols);
 
@@ -184,12 +183,13 @@ int convolution(int *inpixels,int *params,int *outpixels) {
       // second, use the params to use the pixels around it to calculate output pixel
       if (row == 1 || row == rows || col == 1 || col == cols) { 
         t = inpixels[i];
+        printf("%d = inpixels[%d]\n",t,i);
       }
       else { // perform the convolution on that pixel
         t = 0;
         
-        for (m = 0,x = -kcol/2; m < krow; m++) {
-          for (n = 0,y = -kcol/2; n < kcol; n++,k++) {
+        for (k = 6,m = 0,x = -kcol/2; m < krow; m++,x++) {
+          for (n = 0,y = -kcol/2; n < kcol; n++,k++,y++) {
             t += params[k]*inpixels[i-x*cols-y];
           }
         }
