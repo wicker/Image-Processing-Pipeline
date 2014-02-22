@@ -1,14 +1,23 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define ARGS 3
+#define ARGS 4
 #define DATAPOINTS 76800
 #define ROWS 320 
 #define COLS 240
 
+// TO DO
+// 1. Extensible convolution that receives array of integer coefficients
+// and indicated size of convolution matrix, then checks to make sure
+// the two values agree. If they do, it performs the convolution on 
+// the given image. 
+//
+// 2. Let the program run more than one convolution operation in a row.
+
 int instructions();
 int exit_program(int);
 void print_array(int * data);
+int blur(int sz,int *indata,int *outdata);
 int conv_3x3(int a,int b,int c,int d,int e,int f,int g,int h,int i, int poi,int row, int col, int *data);
 int conv_5x5(int a,int b,int c,int d,int e,
              int f,int g,int h,int i,int j,
@@ -24,6 +33,7 @@ int main(int argc, char *argv[]) {
     return instructions();
 
   int i;
+  int sz = atoi(argv[3]);
   int convnum = atoi(argv[1]);
   FILE * filein = fopen(argv[2],"r");
   if (filein == NULL) {
@@ -74,6 +84,12 @@ int main(int argc, char *argv[]) {
         }
       }
       break;
+    case 4:
+      printf("#4 - Blur Function Test\n");
+      int rtn = blur(sz,in_array,out_array);
+      if (rtn == -1) 
+        printf("Fail!");
+      else break;
     default:
       printf("Improper sort number. Range 1-3.\n");
   }
@@ -90,6 +106,26 @@ int main(int argc, char *argv[]) {
   }
 
   exit_program(0);
+}
+
+int blur(int sz,int *indata,int *outdata) {
+
+  int i,row,col;
+
+  i = 1;
+  for (row = 1; row <= ROWS; row++) {
+    for (col = 1; col <= COLS; col++) {
+      if (sz == 3)
+        outdata[i] = conv_5x5(1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,i,row,col,indata);
+      else if (sz == 5)
+        outdata[i] = conv_3x3(1,1,1,1,1,1,1,1,1,i,row,col,indata);
+      else
+        outdata[i] = indata[i];
+      i++;
+    }
+  }
+
+  return 0;
 }
 
 int conv_3x3(int a,int b,int c,int d,int e,int f,int g,int h,int i,int poi,int row, int col, int *data) {

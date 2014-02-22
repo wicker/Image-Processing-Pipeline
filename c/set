@@ -1,0 +1,2 @@
+gcc setup.c -o setup
+./main input/input-brokentop.txt
