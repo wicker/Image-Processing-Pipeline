@@ -2,11 +2,13 @@
 // Jenner Hanni <jeh.wicker.gmail.com>
 // 3-clause BSD license
 //
-// todo: support presets 2 = edge, 3 = emboss
+// todo: support presets 2 = edge, 3 = emboss for any size kernel
 //
 // todo: make it so in kernels bigger than 3x3 the outer pixels are propagated
 // out but the intermediate ones between poi and the edge are convoluted
 // properly.
+//
+// todo: make it play nice with scripting
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -105,6 +107,7 @@ int main(int argc, char *argv[]) {
 
   while (reps > 0) {
     // determine the size of the convolution kernel matrix
+    
     printf("For the kernel matrix of size NxN, enter the desired integer value of N. ");
 
     scanf("%d",&kernelsize);
@@ -117,19 +120,19 @@ int main(int argc, char *argv[]) {
     if (reps == 2) {
       params2[4] = kernelsize;              // value of N in NxN kernel matrix
       params2[5] = kernelsize*kernelsize;   // number of kernel coefficients
-      printf("Which operation for the second operation? Blur (1), Edge (2), Emboss (3), Custom (4) ");
+      printf("Which operation for the second operation? Blur (1) or Custom (2) ");
       scanf("%d",&params2[0]);
-      if (params2[0] < 1 || params2[0] > 4) {
-        printf("Please choose 1,2,3, or 4.");
+      if (params2[0] < 1 || params2[0] > 2) {
+        printf("Please choose 1 or 2: ");
         scanf("%d",&params2[0]);
       }
-      if (params2[0] < 1 || params2[0] > 4) {
+      if (params2[0] < 1 || params2[0] > 2) {
         printf("The program will now close.\n");
         exit_program(1);
       }
       switch(params2[0]) {
         case 1:
-          printf("You've selected an blur operation.\n");
+          printf("You've selected a blur operation.\n");
           for (i = 6; i < 6+params2[5]; i++)
             params2[i] = 1;
           break;
@@ -137,7 +140,7 @@ int main(int argc, char *argv[]) {
         case 3:
         case 4:
         default:
-          printf("Only blur is implemented. Please enter the coefficients for a custom operation.\n");
+          printf("Please enter the coefficients for a custom operation.\n");
           printf("Enter all %d coefficients in order from left to right with an enter after each.\n",params2[5]);
           for (i = 6; i < 6+params2[5]; i++) 
             scanf("%d",&params2[i]);
@@ -146,19 +149,19 @@ int main(int argc, char *argv[]) {
     else if (reps == 1) {
       params1[4] = kernelsize;              // value of N in NxN kernel matrix
       params1[5] = kernelsize*kernelsize;   // number of kernel coefficients
-      printf("Which operation for the second operation? Blur (1), Edge (2), Emboss (3), Custom (4) ");
+      printf("Which operation for the first operation? Blur (1) or Custom (2) ");
       scanf("%d",&params1[0]);
-      if (params1[0] < 1 || params1[0] > 4) {
-        printf("Please choose 1,2,3, or 4.");
+      if (params1[0] < 1 || params1[0] > 2) {
+        printf("Please choose 1 or 2: ");
         scanf("%d",&params1[0]);
       }
-      if (params1[0] < 1 || params1[0] > 4) {
+      if (params1[0] < 1 || params1[0] > 2) {
         printf("The program will now close.\n");
         exit_program(1);
       }
       switch(params1[0]) {
         case 1:
-          printf("You've selected an blur operation.\n");
+          printf("You've selected a blur operation.\n");
           for (i = 6; i < 6+params1[5]; i++)
             params1[i] = 1;
           break;
@@ -166,8 +169,8 @@ int main(int argc, char *argv[]) {
         case 3:
         case 4:
         default:
-          printf("Only blur is implemented. Please enter the coefficients for a custom operation.\n");
-          printf("Enter all %d coefficients in order from left to right with an enter after each.\n",params1[5]);
+          printf("Please enter the coefficients for a custom operation.\n");
+          printf("Enter all %d coefficients in order from left to right with an enter after each.\n",params2[5]);
           for (i = 6; i < 6+params1[5]; i++) 
             scanf("%d",&params1[i]);
       }
@@ -202,7 +205,7 @@ int main(int argc, char *argv[]) {
       return 0;
     }  
     for (i = 0; i < params2[3]; i++) 
-      fprintf(fileout2, "%d ", outpixels1[i]);
+      fprintf(fileout2, "%d ", outpixels2[i]);
   }
 
   exit_program(0);
