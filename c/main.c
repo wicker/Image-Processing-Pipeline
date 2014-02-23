@@ -2,8 +2,6 @@
 // Jenner Hanni <jeh.wicker.gmail.com>
 // 3-clause BSD license
 //
-// todo: support presets 2 = edge, 3 = emboss for any size kernel
-//
 // todo: make it so in kernels bigger than 3x3 the outer pixels are propagated
 // out but the intermediate ones between poi and the edge are convoluted
 // properly.
@@ -32,7 +30,14 @@ int main(int argc, char *argv[]) {
 
   int height,width,yn,i; 
 
-  // handle_meta()
+  // determine if the input file is even valid 
+  FILE * filein = fopen(argv[1],"r");
+  if (filein == NULL) {
+    printf("File did not open properly! Does it exist?\n");
+    exit_program(1);
+    return 0;
+  }
+  
   // poll user for the image height and width
   printf("Enter the image width: ");
   scanf("%d",&width);
@@ -45,26 +50,9 @@ int main(int argc, char *argv[]) {
     return 0;
   }
 
-  // save the name of the file to operate on
-  FILE * filein = fopen(argv[1],"r");
-  if (filein == NULL) {
-    printf("File did not open properly! Does it exist?\n");
-    exit_program(1);
-    return 0;
-  }
-  
   // create inpixels and outpixels arrays from the input height and width
   int inpixels[height*width];
   int outpixels[height*width];
-
-  // fill the inpixels array with data from the input file
-  int size = height*width;
-  for (i = 0; i < size; i++) {
-    fscanf(filein, "%d ", &inpixels[i]);
-    printf("%d ",inpixels[i]);
-  }
-  fclose(filein);
-  printf("\n");
 
   // poll the user for the convolution parameters
   
@@ -99,10 +87,18 @@ int main(int argc, char *argv[]) {
 
   for (rep = 1; rep <= reps; rep++) {
 
+    // if this is the first rep, fill the inpixels array with data from input file
+    if (rep == 1) {
+      for (i = 0; i < params[3]; i++) 
+        fscanf(filein, "%d ", &inpixels[i]);
+      fclose(filein);
+      printf("\n");
+    }
+
     // if this isn't the first rep, it needs the previous saved output pixels
     if (rep != 1) {
       filein = fopen("output.txt","r");
-      for (i = 0; i < size; i++) {
+      for (i = 0; i < params[3]; i++) {
         fscanf(filein, "%d ", &inpixels[i]);
         printf("%d ",inpixels[i]);
       }
@@ -201,4 +197,3 @@ int exit_program(int result) {
     printf("======================================\n");
   return 0;
 }
-
