@@ -13,19 +13,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-int instructions();
 int exit_program(int);
-
-//handle_meta()
-//1. uses the name of the file and image size to fill the pixel array
-//2. error checks the user input
-int handle_input_meta(int *inpixels);
-
-// handle_params()
-// 1. polls user and fills params array with num and type of ops, kernel size, and image size
-// 2. use kernel size to fill coeffs array as appropriate
-// 3. error checks the user input
-int handle_input_params(int *params1,int *params2);
 
 // convolution()
 // 1. uses the given params array to 
@@ -33,10 +21,16 @@ int convolution(int *inpixels,int *params,int *outpixels);
 
 // main()
 // 1. receives args and error checks inputs
-// 2. calls handle_input() to receive all the convolution parameters
+// 2. opens the text file and saves input pixels
+// 3. polls user for convolution type and kernel size
+// 4. performs the convolution
+// 5. outputs the pixels to a text file
+// 6. uses the output text file as an input and repeats steps 2-5 
+//    if more than one operation in a row
+
 int main(int argc, char *argv[]) {
 
-  int height, width,yn; 
+  int height,width,yn,i; 
 
   // handle_meta()
   // poll user for the image height and width
@@ -61,25 +55,20 @@ int main(int argc, char *argv[]) {
   
   // create inpixels and outpixels arrays from the input height and width
   int inpixels[height*width];
-  int outpixels1[height*width];
-  int outpixels2[height*width];
+  int outpixels[height*width];
 
   // fill the inpixels array with data from the input file
   int size = height*width;
-  int size1 = 1;
-  int size2 = 1;
-  int rows = height;
-  int cols = width;
-  int i;
   for (i = 0; i < size; i++) {
     fscanf(filein, "%d ", &inpixels[i]);
     printf("%d ",inpixels[i]);
   }
+  fclose(filein);
   printf("\n");
 
   // poll the user for the convolution parameters
   
-  int kernelsize,reps,first_op,second_op,row,col;
+  int reps;
 
   // determine how many operations to perform on that image
   printf("Do you want to perform 1 or 2 convolution operations on this image? ");
@@ -97,120 +86,77 @@ int main(int argc, char *argv[]) {
   else
     printf("There will be %d operations performed on this image.\n",reps);
 
-  // create the two parameters arrays and set the desired operation flag to zero
-  int params2[300];
-  int params1[300];
-  params1[0] = params2[0] = 0;              // desired convolution operation
-  params1[1] = params2[1] = height;         // number of image rows
-  params1[2] = params2[2] = width;          // number of image columns
-  params1[3] = params2[3] = height*width;   // number of image pixels 
+  // NEW
+  // for each operation in the sequence, collect the user's information
+  // and perform the convolution, then save the output to a file.
 
-  while (reps > 0) {
-    // determine the size of the convolution kernel matrix
-    
-    printf("For the kernel matrix of size NxN, enter the desired integer value of N. ");
+  int rep;
+  int params[300];
+  params[0] = 0;              // desired convolution operation
+  params[1] = height;         // number of image rows
+  params[2] = width;          // number of image columns
+  params[3] = height*width;   // number of image pixels
 
-    scanf("%d",&kernelsize);
-    if (kernelsize % 2 == 0) {
-      printf("The kernel must be an odd number.\n");
-      exit_program(1);
-      return 0;
+  for (rep = 1; rep <= reps; rep++) {
+
+    // if this isn't the first rep, it needs the previous saved output pixels
+    if (rep != 1) {
+      filein = fopen("output.txt","r");
+      for (i = 0; i < size; i++) {
+        fscanf(filein, "%d ", &inpixels[i]);
+        printf("%d ",inpixels[i]);
+      }
+      fclose(filein);
+      printf("\n");
     }
 
-    if (reps == 2) {
-      params2[4] = kernelsize;              // value of N in NxN kernel matrix
-      params2[5] = kernelsize*kernelsize;   // number of kernel coefficients
-      printf("Which operation for the second operation? Blur (1) or Custom (2) ");
-      scanf("%d",&params2[0]);
-      if (params2[0] < 1 || params2[0] > 2) {
-        printf("Please choose 1 or 2: ");
-        scanf("%d",&params2[0]);
-      }
-      if (params2[0] < 1 || params2[0] > 2) {
-        printf("The program will now close.\n");
-        exit_program(1);
-      }
-      switch(params2[0]) {
-        case 1:
-          printf("You've selected a blur operation.\n");
-          for (i = 6; i < 6+params2[5]; i++)
-            params2[i] = 1;
-          break;
-        case 2:
-        case 3:
-        case 4:
-        default:
-          printf("Please enter the coefficients for a custom operation.\n");
-          printf("Enter all %d coefficients in order from left to right with an enter after each.\n",params2[5]);
-          for (i = 6; i < 6+params2[5]; i++) 
-            scanf("%d",&params2[i]);
-      }
+    // get kernel size and convolution coefficients from the user
+    printf("\n======== OPERATION #%d ==========\n",rep);
+    printf("For the kernel matrix of size NxN, enter the desired integer value of N.\n");
+    printf("This program supports odd values between 1 and 17. Enter a value:  ");
+    scanf("%d",&params[4]);
+
+    while (params[4] % 2 == 0 || params[4] > 17 || params[4] < 0) { 
+      printf("N must be an odd number between 1 and 17. Choose again: ");
+      scanf("%d",&params[4]);
+    } 
+
+    params[5] = params[4]*params[4];
+    printf("Which convolution operation? You can choose blur (1) or custom (2). ");
+    scanf("%d",&params[0]);
+    if (params[0] < 1 || params[0] > 2) {
+      printf("Illegal input. Try again: ");
     }
-    else if (reps == 1) {
-      params1[4] = kernelsize;              // value of N in NxN kernel matrix
-      params1[5] = kernelsize*kernelsize;   // number of kernel coefficients
-      printf("Which operation for the first operation? Blur (1) or Custom (2) ");
-      scanf("%d",&params1[0]);
-      if (params1[0] < 1 || params1[0] > 2) {
-        printf("Please choose 1 or 2: ");
-        scanf("%d",&params1[0]);
-      }
-      if (params1[0] < 1 || params1[0] > 2) {
-        printf("The program will now close.\n");
-        exit_program(1);
-      }
-      switch(params1[0]) {
-        case 1:
-          printf("You've selected a blur operation.\n");
-          for (i = 6; i < 6+params1[5]; i++)
-            params1[i] = 1;
-          break;
-        case 2:
-        case 3:
-        case 4:
-        default:
-          printf("Please enter the coefficients for a custom operation.\n");
-          printf("Enter all %d coefficients in order from left to right with an enter after each.\n",params2[5]);
-          for (i = 6; i < 6+params1[5]; i++) 
-            scanf("%d",&params1[i]);
-      }
+    if (params[0] == 1) {
+      for (i = 6; i < 6+params[5]; i++)
+        params[i] = 1;
+    }
+    else {
+      printf("Please enter the coefficients for a custom operation.\n");
+      printf("Enter all %d coefficients in order from left to right with an enter after each.\n",params[5]);
+      for (i = 6; i < 6+params[5]; i++) 
+        scanf("%d",&params[i]);
+      
     }
 
-    reps--;
-  }
+    // use the parameters to perform the convolution
+    convolution(inpixels,params,outpixels);
 
-  // create the output by performing the convolution operation on each kernel
-  // start with kernel #1
-  if (params1[0] != 0) {
-    convolution(inpixels,params1,outpixels1);
-    FILE * fileout1 = fopen("output1.txt","w");
-    if (fileout1 == NULL) {
+    // save the output to the output text file
+    FILE * fileout = fopen("output.txt","w");
+    if (fileout == NULL) {
       printf("File did not open properly! Does it exist?\n");
       exit_program(1);
       return 0;
     }  
-    for (i = 0; i < params1[3]; i++) 
-      fprintf(fileout1, "%d ", outpixels1[i]);
-    fclose(fileout1);
+    for (i = 0; i < params[3]; i++) 
+      fprintf(fileout, "%d ", outpixels[i]);
+    fclose(fileout);
   }
 
-  // and now kernel #2 if we chose to do it
-  if (params2[0] != 0) {
-    convolution(outpixels1,params2,outpixels2);
-
-    FILE * fileout2 = fopen("output2.txt","w");
-    if (fileout2 == NULL) {
-      printf("File did not open properly! Does it exist?\n");
-      exit_program(1);
-      return 0;
-    }  
-    for (i = 0; i < params2[3]; i++) 
-      fprintf(fileout2, "%d ", outpixels2[i]);
-  }
-
+  // report success and close the program
   exit_program(0);
   return 0;
-
 }
 
 int convolution(int *inpixels,int *params,int *outpixels) {
@@ -222,8 +168,6 @@ int convolution(int *inpixels,int *params,int *outpixels) {
   int krow = params[4];
   int kcol = params[4];
 
-  printf("rows: %d\tcols: %d\n",rows,cols);
-
   // first, orient the pixel of interest with rows and cols
   for (i = 0,row = 1; row <= rows; row++) {
     for (col = 1; col <= cols; col++,i++) {
@@ -231,7 +175,6 @@ int convolution(int *inpixels,int *params,int *outpixels) {
       // second, use the params to use the pixels around it to calculate output pixel
       if (row == 1 || row == rows || col == 1 || col == cols) { 
         t = inpixels[i];
-        printf("%d = inpixels[%d]\n",t,i);
       }
       else { // perform the convolution on that pixel
         t = 0;
@@ -257,10 +200,5 @@ int exit_program(int result) {
     printf("Program successfully completed.\n");
     printf("======================================\n");
   return 0;
-}
-
-int instructions() {
-  printf("\n \
-  Usage: ./set\n");
 }
 
