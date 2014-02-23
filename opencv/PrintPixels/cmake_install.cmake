@@ -1,4 +1,4 @@
-# Install script for directory: /u/jehanni/SystemVerilog/final/opencv_test/PrintPixels
+# Install script for directory: /home/wicker/proj/wicker/image-processing/opencv/PrintPixels
 
 # Set the install prefix
 IF(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -38,7 +38,7 @@ ELSE(CMAKE_INSTALL_COMPONENT)
   SET(CMAKE_INSTALL_MANIFEST "install_manifest.txt")
 ENDIF(CMAKE_INSTALL_COMPONENT)
 
-FILE(WRITE "/u/jehanni/SystemVerilog/final/opencv_test/PrintPixels/${CMAKE_INSTALL_MANIFEST}" "")
+FILE(WRITE "/home/wicker/proj/wicker/image-processing/opencv/PrintPixels/${CMAKE_INSTALL_MANIFEST}" "")
 FOREACH(file ${CMAKE_INSTALL_MANIFEST_FILES})
-  FILE(APPEND "/u/jehanni/SystemVerilog/final/opencv_test/PrintPixels/${CMAKE_INSTALL_MANIFEST}" "${file}\n")
+  FILE(APPEND "/home/wicker/proj/wicker/image-processing/opencv/PrintPixels/${CMAKE_INSTALL_MANIFEST}" "${file}\n")
 ENDFOREACH(file)

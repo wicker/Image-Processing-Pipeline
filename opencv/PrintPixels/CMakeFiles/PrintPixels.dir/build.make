@@ -31,11 +31,14 @@ CMAKE_COMMAND = /usr/bin/cmake
 # The command to remove a file.
 RM = /usr/bin/cmake -E remove -f
 
+# Escaping for special characters.
+EQUALS = =
+
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /u/jehanni/SystemVerilog/final/opencv_test/PrintPixels
+CMAKE_SOURCE_DIR = /home/wicker/proj/wicker/image-processing/opencv/PrintPixels
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /u/jehanni/SystemVerilog/final/opencv_test/PrintPixels
+CMAKE_BINARY_DIR = /home/wicker/proj/wicker/image-processing/opencv/PrintPixels
 
 # Include any dependencies generated for this target.
 include CMakeFiles/PrintPixels.dir/depend.make
@@ -48,17 +51,17 @@ include CMakeFiles/PrintPixels.dir/flags.make
 
 CMakeFiles/PrintPixels.dir/PrintPixels.cpp.o: CMakeFiles/PrintPixels.dir/flags.make
 CMakeFiles/PrintPixels.dir/PrintPixels.cpp.o: PrintPixels.cpp
-	$(CMAKE_COMMAND) -E cmake_progress_report /u/jehanni/SystemVerilog/final/opencv_test/PrintPixels/CMakeFiles $(CMAKE_PROGRESS_1)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/wicker/proj/wicker/image-processing/opencv/PrintPixels/CMakeFiles $(CMAKE_PROGRESS_1)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object CMakeFiles/PrintPixels.dir/PrintPixels.cpp.o"
-	/usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/PrintPixels.dir/PrintPixels.cpp.o -c /u/jehanni/SystemVerilog/final/opencv_test/PrintPixels/PrintPixels.cpp
+	/usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/PrintPixels.dir/PrintPixels.cpp.o -c /home/wicker/proj/wicker/image-processing/opencv/PrintPixels/PrintPixels.cpp
 
 CMakeFiles/PrintPixels.dir/PrintPixels.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/PrintPixels.dir/PrintPixels.cpp.i"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /u/jehanni/SystemVerilog/final/opencv_test/PrintPixels/PrintPixels.cpp > CMakeFiles/PrintPixels.dir/PrintPixels.cpp.i
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /home/wicker/proj/wicker/image-processing/opencv/PrintPixels/PrintPixels.cpp > CMakeFiles/PrintPixels.dir/PrintPixels.cpp.i
 
 CMakeFiles/PrintPixels.dir/PrintPixels.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/PrintPixels.dir/PrintPixels.cpp.s"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /u/jehanni/SystemVerilog/final/opencv_test/PrintPixels/PrintPixels.cpp -o CMakeFiles/PrintPixels.dir/PrintPixels.cpp.s
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /home/wicker/proj/wicker/image-processing/opencv/PrintPixels/PrintPixels.cpp -o CMakeFiles/PrintPixels.dir/PrintPixels.cpp.s
 
 CMakeFiles/PrintPixels.dir/PrintPixels.cpp.o.requires:
 .PHONY : CMakeFiles/PrintPixels.dir/PrintPixels.cpp.o.requires
@@ -94,6 +97,6 @@ CMakeFiles/PrintPixels.dir/clean:
 .PHONY : CMakeFiles/PrintPixels.dir/clean
 
 CMakeFiles/PrintPixels.dir/depend:
-	cd /u/jehanni/SystemVerilog/final/opencv_test/PrintPixels && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /u/jehanni/SystemVerilog/final/opencv_test/PrintPixels /u/jehanni/SystemVerilog/final/opencv_test/PrintPixels /u/jehanni/SystemVerilog/final/opencv_test/PrintPixels /u/jehanni/SystemVerilog/final/opencv_test/PrintPixels /u/jehanni/SystemVerilog/final/opencv_test/PrintPixels/CMakeFiles/PrintPixels.dir/DependInfo.cmake --color=$(COLOR)
+	cd /home/wicker/proj/wicker/image-processing/opencv/PrintPixels && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/wicker/proj/wicker/image-processing/opencv/PrintPixels /home/wicker/proj/wicker/image-processing/opencv/PrintPixels /home/wicker/proj/wicker/image-processing/opencv/PrintPixels /home/wicker/proj/wicker/image-processing/opencv/PrintPixels /home/wicker/proj/wicker/image-processing/opencv/PrintPixels/CMakeFiles/PrintPixels.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : CMakeFiles/PrintPixels.dir/depend
 
