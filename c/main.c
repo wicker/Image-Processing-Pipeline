@@ -158,35 +158,62 @@ int main(int argc, char *argv[]) {
 int convolution(int *inpixels,int *params,int *outpixels) {
 
   int t = 0;
-  int i,row,col,m,n,x,y,k;
-  int l = 0;
-  int rows = params[1];
-  int cols = params[2]; 
-  int krow = params[4];
-  int kcol = params[4];
+  int i,irow,icol,krow,kcol,kx,ky,kcount;
+  int irows = params[1];
+  int icols = params[2]; 
+  int krows = params[4];
+  int kcols = params[4];
+  int k = krows*kcols;
+  int l;
 
-  // first, orient the pixel of interest with rows and cols
-  // then use the params to use the pixels around our pixel to calculate output value
-  for (i = 0,row = 1; row <= rows; row++) {
-    for (col = 1; col <= cols; col++,i++) {
-      t = 0;
-      if (row == 3 && col == 4) return 0;
+  // first, orient the source image's pixel of interest with irow and icol
+  // then use the params array which contains the kernel matrix coefficients to the
+  // image pixels around our image pixel to calculate output value
+  for (i = 0,irow = 1; irow <= irows; irow++) {
+    for (icol = 1; icol <= icols; icol++,i++) {
 
-      for (k = 6,m = 0,x = -kcol/2; m < krow; m++,x++) {
-        for (n = 0,y = -kcol/2; n < kcol; n++,k++,y++) {
-          // this is an edge case where some of the kernel is outside of the image
-          if (row < k/2 || row > rows-k/2 || col < k/2 || col > cols-k/2) { 
-          }
-          // this is a pixel where the entire kernel is inside the image
-          else
-            t += params[k]*inpixels[i+x*cols-y];
-            printf("i: %d\tk: %d\trow: %d\t col: %d\t rows-k/2: %d\tcols-k/2: %d\tx: %d\ty: %d\ti+x*cols+y:%d\n",i,k,row,col,rows-k/2,cols-k/2,x,y,i+x*cols+y);
+      // reset the output for this pixel
+      t = 0; l = 0;
+
+      for (kcount = 6,krow = 0,kx = -kcols/2; krow < krows; krow++,kx++) {
+        for (kcol = 0,ky = -kcols/2; kcol < kcols; kcol++,kcount++,ky++) {
+
+          if (kcount == 6) {
+            // identify spaces A, B, and C in the first row space V
+            if (irow <= krows/2) {
+              if (icol <= kcols/2) 
+                printf("[A] irow: %d\ticol: %d\n",irow,icol);
+              else if (icol > icols-kcols/2)
+                printf("[C] irow: %d\ticol: %d\n",irow,icol);
+              else 
+                printf("[B] irow: %d\ticol: %d\n",irow,icol);
+            }
+            // identify spaces F, G, and H in the bottom row space
+            else if (irow > irows-krows/2) {
+              if (icol <= kcols/2)
+                printf("[F] irow: %d\ticol: %d\n",irow,icol);
+              else if (icol > icols - kcols/2)
+                printf("[G] irow: %d\ticol: %d\n",irow,icol);
+              else
+                printf("[H] irow: %d\ticol: %d\n",irow,icol);
+            }
+            // identify space D in the left-hand column space
+            else if (icol <= kcols/2) 
+              printf("[D] irow: %d\ticol: %d\n",irow,icol);
+            // identify space E in the right-hand column space
+            else if (icol > icols - kcols/2) 
+              printf("[E] irow: %d\ticol: %d\n",irow,icol);
+            // otherwise, it's in the safe space in the middle and all kernels are fine to use. 
+            else 
+              t += params[kcount]*inpixels[i+kx*icols+ky];
+        }
         }
       }
-      if (params[0] == 1) 
-        t = t/params[5];
 
-      // save output pixel
+      // get the average of the summed result of the kernel coefficients over the input pixels
+      t = t/params[5];
+
+      // save output pixel to the output array
       outpixels[i] = t;
     }
   }
