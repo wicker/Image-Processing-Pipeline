@@ -26,14 +26,14 @@ To use script:
 
 where 
 
-input.txt is the location of the input text file
-width of the image in pixels
-height of the image in pixels
-x and y are convolution operations
-  1 - blur
-  2 - edge
-  3 - emboss
-  4 - custom
+input.txt is the location of the input text file  
+width of the image in pixels  
+height of the image in pixels  
+x and y are convolution operations  
+  1 - blur  
+  2 - edge  
+  3 - emboss  
+  4 - custom  
 x1 and y1 are the size N of the kernel NxN
 
 Example:
