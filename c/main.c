@@ -12,10 +12,7 @@
 #include <stdlib.h>
 
 int exit_program(int);
-
-// convolution()
-// 1. uses the given params array to 
-int convolution(int *inpixels,int *params,int *outpixels);
+void convolution(int *inpixels,int *params,int *outpixels);
 
 // main()
 // 1. receives args and error checks inputs
@@ -43,7 +40,8 @@ int main(int argc, char *argv[]) {
   scanf("%d",&width);
   printf("Enter the image height: ");
   scanf("%d",&height);
-  printf("You entered an image size of width %d and height %d. Enter a '0' if this is true. ",width,height);
+  printf("You entered an image size of width %d and height %d.",width,height);
+  printf("Enter a '0' if this is true. ");
   scanf("%d",&yn);
   if (yn) {
     exit_program(1);
@@ -63,7 +61,7 @@ int main(int argc, char *argv[]) {
   scanf("%d",&reps);
 
   if (reps < 1 || reps > 2) {
-    printf("You wanted to perform %d successive operations on your image.\n",reps);
+    printf("You wanted to perform %d successive operations on your image. \n",reps);
     printf("The program only supports 1 or 2 operations.\n");
     exit_program(1);
     return 0;
@@ -74,12 +72,10 @@ int main(int argc, char *argv[]) {
   else
     printf("There will be %d operations performed on this image.\n",reps);
 
-  // NEW
   // for each operation in the sequence, collect the user's information
   // and perform the convolution, then save the output to a file.
 
-  int rep;
-  int params[300];
+  int rep, params[300];
   params[0] = 0;              // desired convolution operation
   params[1] = height;         // number of image rows
   params[2] = width;          // number of image columns
@@ -92,18 +88,15 @@ int main(int argc, char *argv[]) {
       for (i = 0; i < params[3]; i++) 
         fscanf(filein, "%d ", &inpixels[i]);
       fclose(filein);
-      printf("\n");
     }
 
     // if this isn't the first rep, it needs the previous saved output pixels
-    if (rep != 1) {
+    else {
       filein = fopen("output.txt","r");
       for (i = 0; i < params[3]; i++) {
         fscanf(filein, "%d ", &inpixels[i]);
-        printf("%d ",inpixels[i]);
       }
       fclose(filein);
-      printf("\n");
     }
 
     // get kernel size and convolution coefficients from the user
@@ -155,16 +148,17 @@ int main(int argc, char *argv[]) {
   return 0;
 }
 
-int convolution(int *inpixels,int *params,int *outpixels) {
+// convolution()
+// uses the given params array to iterate through each image pixel
+// and calculate a new output based on the pixel's nearby neighbors
+void convolution(int *inpixels,int *params,int *outpixels) {
 
   int t = 0;
-  int i,irow,icol,krow,kcol,kx,ky,kcount;
+  int i,irow,icol,krow,kcol,kx,ky,kcount,discardpix;
   int irows = params[1];
   int icols = params[2]; 
   int krows = params[4];
   int kcols = params[4];
-  int k = krows*kcols;
-  int l;
 
   // first, orient the source image's pixel of interest with irow and icol
   // then use the params array which contains the kernel matrix coefficients to the
@@ -173,51 +167,23 @@ int convolution(int *inpixels,int *params,int *outpixels) {
     for (icol = 1; icol <= icols; icol++,i++) {
 
       // reset the output for this pixel
-      t = 0; l = 0;
+      t = 0; 
+      discardpix = 0;
 
-      for (kcount = 6,krow = 0,kx = -kcols/2; krow < krows; krow++,kx++) {
-        for (kcol = 0,ky = -kcols/2; kcol < kcols; kcol++,kcount++,ky++) {
-
-          if (kcount == 6) {
-            // identify spaces A, B, and C in the first row space V
-            if (irow <= krows/2) {
-              if (icol <= kcols/2) 
-                printf("[A] irow: %d\ticol: %d\n",irow,icol);
-              else if (icol > icols-kcols/2)
-                printf("[C] irow: %d\ticol: %d\n",irow,icol);
-              else 
-                printf("[B] irow: %d\ticol: %d\n",irow,icol);
-            }
-            // identify spaces F, G, and H in the bottom row space
-            else if (irow > irows-krows/2) {
-              if (icol <= kcols/2)
-                printf("[F] irow: %d\ticol: %d\n",irow,icol);
-              else if (icol > icols - kcols/2)
-                printf("[G] irow: %d\ticol: %d\n",irow,icol);
-              else
-                printf("[H] irow: %d\ticol: %d\n",irow,icol);
-            }
-            // identify space D in the left-hand column space
-            else if (icol <= kcols/2) 
-              printf("[D] irow: %d\ticol: %d\n",irow,icol);
-            // identify space E in the right-hand column space
-            else if (icol > icols - kcols/2) 
-              printf("[E] irow: %d\ticol: %d\n",irow,icol);
-            // otherwise, it's in the safe space in the middle and all kernels are fine to use. 
-            else 
+      for (kcount = 6,krow = 1,kx = -kcols/2; krow <= krows; krow++,kx++) {
+        for (kcol = 1,ky = -kcols/2; kcol <= kcols; kcol++,kcount++,ky++) {
+          if (kx + irow <= 0 || kx + icol <= 0 || kx + irow > irows || ky + icol > icols)
+            discardpix++;
+          else
               t += params[kcount]*inpixels[i+kx*icols+ky];
-        }
         }
       }
 
       // get the average of the summed result of the kernel coefficients over the input pixels
-      t = t/params[5];
-
-      // save output pixel to the output array
-      outpixels[i] = t;
+      // discardpix is the number of pixels that were off the edge of the image and unusable
+      outpixels[i] = t/(params[5]-discardpix);
     }
   }
-  return 0;  
 }
 
 int exit_program(int result) {
