@@ -1,12 +1,6 @@
 // Image convolution
 // Jenner Hanni <jeh.wicker.gmail.com>
 // 3-clause BSD license
-//
-// todo: make it so in kernels bigger than 3x3 the outer pixels are propagated
-// out but the intermediate ones between poi and the edge are convoluted
-// properly.
-//
-// todo: make it play nice with scripting
 
 #include <stdio.h>
 #include <stdlib.h>
