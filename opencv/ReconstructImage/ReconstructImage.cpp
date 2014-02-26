@@ -61,8 +61,6 @@ int main( int argc, char* argv[] )
   imshow( "Display Image", output_img );
   waitKey(0);
 
-  return 0;
-
   // create the modified PNG in the local folder
   imwrite("output.png", output_img);
 

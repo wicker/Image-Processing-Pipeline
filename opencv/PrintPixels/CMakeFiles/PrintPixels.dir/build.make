@@ -81,6 +81,11 @@ PrintPixels_EXTERNAL_OBJECTS =
 
 PrintPixels: CMakeFiles/PrintPixels.dir/PrintPixels.cpp.o
 PrintPixels: CMakeFiles/PrintPixels.dir/build.make
+PrintPixels: /usr/local/lib/libopencv_core.so.2.4.8
+PrintPixels: /usr/local/lib/libopencv_imgproc.so.2.4.8
+PrintPixels: /usr/local/lib/libopencv_video.so.2.4.8
+PrintPixels: /usr/local/lib/libopencv_imgproc.so.2.4.8
+PrintPixels: /usr/local/lib/libopencv_core.so.2.4.8
 PrintPixels: CMakeFiles/PrintPixels.dir/link.txt
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --red --bold "Linking CXX executable PrintPixels"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/PrintPixels.dir/link.txt --verbose=$(VERBOSE)

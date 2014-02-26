@@ -167,7 +167,7 @@ OpenCV_3RDPARTY_LIB_DIR_OPT:PATH=/usr/local/share/OpenCV/3rdparty/lib
 OpenCV_CONFIG_PATH:FILEPATH=/usr/local/share/OpenCV
 
 //The directory containing a CMake configuration file for OpenCV.
-OpenCV_DIR:PATH=/usr/share/OpenCV
+OpenCV_DIR:PATH=/usr/local/share/OpenCV
 
 //Path where debug OpenCV libraries are located
 OpenCV_LIB_DIR_DBG:PATH=/usr/local/lib
