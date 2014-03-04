@@ -123,7 +123,7 @@ int main(int argc, char *argv[]) {
       convolution(inpixels,params,outpixels);
 
       // save the output to the output text file
-      fileout = fopen("output.txt","w");
+      fileout = fopen(argv[8],"w");
       if (fileout == NULL) {
         printf("File did not open properly! Does it exist?\n");
         exit_program(1);
@@ -178,7 +178,7 @@ int main(int argc, char *argv[]) {
     convolution(inpixels,params,outpixels);
 
     // save the output to the output text file
-    fileout = fopen("output.txt","w");
+    fileout = fopen(argv[8],"w");
     if (fileout == NULL) {
       printf("File did not open properly! Does it exist?\n");
       exit_program(1);
@@ -219,7 +219,7 @@ int main(int argc, char *argv[]) {
       params[2] = width;
       params[3] = height*width;
 
-      // the input file is going to be output.txt after first operation
+      // the input file is going to be the output file after first operation
       filein = fopen(argv[8],"r");
       if (filein == NULL) {
         printf("Either input or output file did not open properly! Does it exist?\n");
@@ -250,7 +250,7 @@ int main(int argc, char *argv[]) {
       convolution(inpixels,params,outpixels);
 
       // save the output to the output text file
-      FILE * fileout = fopen("output.txt","w");
+      FILE * fileout = fopen(argv[8],"w");
       if (fileout == NULL) {
         printf("File did not open properly! Does it exist?\n");
         exit_program(1);
@@ -294,7 +294,7 @@ void convolution(int *inpixels,int *params,int *outpixels) {
 
       for (kcount = 6,krow = 1,kx = -kcols/2; krow <= krows; krow++,kx++) {
         for (kcol = 1,ky = -kcols/2; kcol <= kcols; kcol++,kcount++,ky++) {
-          if (kx + irow <= 0 || kx + icol <= 0 || kx + irow > irows || ky + icol > icols)
+          if (kx + irow <= 0 || ky + icol <= 0 || kx + irow > irows || ky + icol > icols)
             discardpix++;
           else
               t += params[kcount]*inpixels[i+kx*icols+ky];
