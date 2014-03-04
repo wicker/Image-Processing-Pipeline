@@ -6,7 +6,8 @@ Jenner Hanni
 
 Released under the 3-clause BSD License.
 
-***OpenCV***
+OpenCV
+------
 
 PrintPixel takes an input PNG and outputs a text file with the grayscale value of the pixels separated by a space. 
 
@@ -14,17 +15,19 @@ PrintPixel takes an input PNG and outputs a text file with the grayscale value o
 
 ReconstructImage takes an input text file with the same grayscale pixel values separated by a space and returns an output PNG. 
 
-./PrintPixel input.txt 240 320
-<< use SystemVerilog or C program to modify pixels >>
-./ReconstructImage output.txt 240 320
+1. ./PrintPixel input.txt 240 320  
+2. use SystemVerilog or C program to modify pixels
+3. ./ReconstructImage output.txt 240 320
 
-***SystemVerilog***
+SystemVerilog
+-------------
 
 This project performs pixel-by-pixel convolution on a 2-dimensional image of any height and width. A user-defined type pixel_t is a three-channel struct which is passed onto the data bus and through the decoder, blur, edges, emboss, flip, invert, and encoder modules. The only modules which perform operations are blur, edges, and emboss. Download the files and `run` the script.
 
 Compiled using Mentor Questa.
 
-***C***
+C
+-
 
 This is a framework in C to either poll the user or accept arguments directly. The executables are 'main' (for polling) or 'script' (for arguments). 
 
