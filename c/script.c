@@ -6,6 +6,11 @@
 // Allows custom output file name.
 // Does not prompt the user, just takes inputs.
 
+// to do
+// update user inputs
+// take coefficients for all sizes
+// allow inputs for 1D separated, |*--
+
 #define ARGS 9
 
 #include <stdio.h>
@@ -28,7 +33,9 @@ int main(int argc, char *argv[]) {
   // check that we received the correct number of arguments
   if (argc != 9) {
     printf("Input should look like this:\n");
-    printf("./script input/input-brokentop.txt 240 320 1 17 2 3 output.txt\n");
+    printf("./script input/input-brokentop.txt 240 320 <op> <kernel> <op> <kernel> output.txt\n");
+    printf("where <op> is blur (1), max-viz (2), and custom (3) to be entered by the user.\n");
+    printf("Kernel has to be N in NxN and it must be an odd number between 1 and 17.\n");
     exit_program(1);
     return -1;
   }
@@ -298,12 +305,24 @@ void convolution(int *inpixels,int *params,int *outpixels) {
             discardpix++;
           else
               t += params[kcount]*inpixels[i+kx*icols+ky];
+
         }
       }
 
+      // if this is a blur coefficients=1 operation,
       // get the average of the summed result of the kernel coefficients over the input pixels
       // discardpix is the number of pixels that were off the edge of the image and unusable
-      outpixels[i] = t/(params[5]-discardpix);
+      if (params[0] == 1)
+        t = t/(params[5]-discardpix);
+      else 
+        t = t;
+
+      if (t < 0)
+        outpixels[i] = 0;
+      else if (t > 255)
+        outpixels[i] = 255;
+      else
+        outpixels[i] = t;
     }
   }
 }

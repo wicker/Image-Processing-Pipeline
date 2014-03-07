@@ -22,7 +22,4 @@ edge detection vs edge enhancement
 laplace is an edge enhancement
 the others are an edge detection
 
-TO DO TO SEE WHAT HAPPENS
-Look at range of sigma
-Modify these above by swapping signs
-Do the same series in 5x5 kernels
+
