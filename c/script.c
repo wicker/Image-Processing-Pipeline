@@ -16,8 +16,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#define TRUE 0
+#define FALSE 1
+
 int exit_program(int);
 void convolution(int *inpixels,int *params,int *outpixels);
+void fill_kernel(int op, int *params);
 
 // main()
 // 1. receives args and error checks inputs
@@ -63,218 +67,134 @@ int main(int argc, char *argv[]) {
   int inpixels[height*width];
   int outpixels[height*width];
 
-  int reps;
+  int reps,i,params[300],firstflag,secondflag,whichop;
   int firstop = atoi(argv[4]);
   int firstN = atoi(argv[5]);
   int secondop = atoi(argv[6]);
   int secondN = atoi(argv[7]);
-  int i,params[300];
 
-  // check if either kernel size argument or convolution operation is zero
-  if (firstop == 0 || firstop < 1 || firstop > 3) {
-    printf("Empty or illegal entry for first operation choice. Checking second operation.\n");
-    if (secondop == 0 || secondop < 1 || secondop > 3) {
-      printf("Illegal choice for second operation. Review the instructions. ");
-      exit_program(1);
-      return(-1);
-    }
-    else if (secondN % 2 == 0) {
-      printf("Kernel matrix N in NxN must be an odd number. Try again.\n");
-      exit_program(1);
-      return(-1);
-    }
-    else if (secondN < 1 || secondN > 17) {
-      printf("N in kernel matrix NxN must be between 1 and 17.\n");
-      exit_program(1);
-      return(-1);
-    }
-    // go ahead and run the second operation
-    else {
-      printf("Running the second operation.\n");
-      params[0] = secondop;
-      params[1] = height;
-      params[2] = width;
-      params[3] = height*width;
+  // set operation order flags
+  if (firstop == 0) firstflag = FALSE;
+  else firstflag = TRUE;
+  if (secondop == 0) secondflag = FALSE;
+  else secondflag = TRUE;
 
-      // determine if input file is input.txt or output.txt
-      if (firstop == 0 || firstop < 1 || firstop > 3)
-        filein = fopen(argv[8],"r");
-        if (filein == NULL) {
-          printf("Either input or output file did not open properly! Does it exist?\n");
-          exit_program(1);
-          return -1;
-        }
-      else
-        filein = fopen(argv[1],"r");
+  if (firstflag == TRUE && secondflag == TRUE)
+    whichop = 2;
+  else if (firstflag == TRUE && secondflag == FALSE)
+    whichop = 1;
+  else if (firstflag == FALSE)
+    exit_program(5);
 
-      // read in the input file
-      for (i = 0; i < params[3]; i++) 
-        fscanf(filein, "%d ", &inpixels[i]);
-      fclose(filein);
-
-      params[4] = secondN;
-      params[5] = secondN*secondN;
-
-      if (params[0] == 1) {
-        for (i = 6; i < 6+params[5]; i++)
-          params[i] = 1;
-      }
-      else {
-        printf("Only blur operation is implemented. Please enter the coefficients for your custom operation.\n");
-        printf("Enter all %d coefficients in order from left to right with an enter after each.\n",params[5]);
-        for (i = 6; i < 6+params[5]; i++) 
-          scanf("%d",&params[i]);
-      }
-      
-      // use the parameters to perform the convolution
-      convolution(inpixels,params,outpixels);
-
-      // save the output to the output text file
-      fileout = fopen(argv[8],"w");
-      if (fileout == NULL) {
-        printf("File did not open properly! Does it exist?\n");
-        exit_program(1);
-        return 0;
-      }  
-      for (i = 0; i < params[3]; i++) 
-        fprintf(fileout, "%d ", outpixels[i]);
-      fclose(fileout);
-
-    } // end running of the second operation
-
-    exit_program(0);
-    return 0;
-   
+  // error check the inputs for each operation and return errors to user if invalid
+  if (firstflag == TRUE) {
+    if (firstop < 1 || firstop > 3)
+      exit_program(2);
+    else if (firstN %2 == 0)
+      exit_program(3);
+    else if (firstN < 1 || firstN > 17)
+      exit_program(4);
+  }
+  else if (secondflag == TRUE) {
+    if (secondop < 1 || secondop > 3)
+      exit_program(2);
+    else if (secondN %2 == 0)
+      exit_program(3);
+    else if (secondN < 1 || secondN > 17)
+      exit_program(4);
   }
 
-  // first op is legal, perform the first op and then the second op
-  else {
-    params[0] = firstop;
+  // now for each operation, 
+  // prep params with its inputs, including reading appropriate input file
+  // then perform the convolution and produce the output file
+  if (whichop == 2) {
+    // store parameter values
+    params[0] = secondop;
     params[1] = height;
     params[2] = width;
     params[3] = height*width;
+    params[4] = secondN;
+    params[5] = secondN*secondN;
 
-    // the input file is input.txt because this is the first operation
-    filein = fopen(argv[1],"r");
-    if (filein == NULL) {
-      printf("Either input or output file did not open properly! Does it exist?\n");
-      exit_program(1);
-      return -1;
-    }
-
-    // read in the input file
+    // read in input pixels
+    filein = fopen(argv[8],"r");    
     for (i = 0; i < params[3]; i++) 
       fscanf(filein, "%d ", &inpixels[i]);
     fclose(filein);
 
-    params[4] = firstN;
-    params[5] = firstN*firstN;
-
-    if (params[0] == 1) {
-      for (i = 6; i < 6+params[5]; i++)
-        params[i] = 1;
-    }
-    else {
-      printf("Only blur operation is implemented. Please enter the coefficients for your custom operation.\n");
-      printf("Enter all %d coefficients in order from left to right with an enter after each.\n",params[5]);
-      for (i = 6; i < 6+params[5]; i++) 
-        scanf("%d",&params[i]);
-    }
-    
-    // use the parameters to perform the convolution
+    // read in coefficients from user and perform convolution
+    fill_kernel(params[0],params);
     convolution(inpixels,params,outpixels);
 
-    // save the output to the output text file
+    // prep output file
     fileout = fopen(argv[8],"w");
     if (fileout == NULL) {
       printf("File did not open properly! Does it exist?\n");
       exit_program(1);
-      return 0;
     }  
     for (i = 0; i < params[3]; i++) 
       fprintf(fileout, "%d ", outpixels[i]);
     fclose(fileout);
 
-    // now determine if the second operation is valid and perform it if it is
-    
-    printf("First operation complete. Checking for a second operation.\n");
-    if (secondop == 0) {
-      printf("No second operation.\n");
-      exit_program(0);
-    }      
-    else if (secondop < 1 || secondop > 3) {
-      printf("Illegal choice for second operation. Review the instructions. ");
+    whichop--;
+  }
+  if (whichop == 1) {
+    // store parameter values
+    params[0] = firstop;
+    params[1] = height;
+    params[2] = width;
+    params[3] = height*width;
+    params[4] = firstN;
+    params[5] = firstN*firstN;
+
+    // read in input pixels 
+    filein = fopen(argv[1],"r");
+    for (i = 0; i < params[3]; i++) 
+      fscanf(filein, "%d ", &inpixels[i]);
+    fclose(filein);
+
+    // read in coefficients from user and perform convolution
+    fill_kernel(params[0],params);
+    convolution(inpixels,params,outpixels);
+
+    // prep output file
+    fileout = fopen(argv[8],"w");
+    if (fileout == NULL) {
+      printf("File did not open properly! Does it exist?\n");
       exit_program(1);
-      return(-1);
-    }
-    else if (secondN % 2 == 0) {
-      printf("Second operation unable to finish.\n");
-      printf("Kernel matrix N in NxN must be an odd number. Try again.\n");
-      exit_program(1);
-      return(-1);
-    }
-    else if (secondN < 1 || secondN > 17) {
-      printf("N in kernel matrix NxN must be between 1 and 17.\n");
-      exit_program(1);
-      return(-1);
-    }
-    // go ahead and run the second operation
-    else {
-      printf("Running the second operation.\n");
-      params[0] = secondop;
-      params[1] = height;
-      params[2] = width;
-      params[3] = height*width;
-
-      // the input file is going to be the output file after first operation
-      filein = fopen(argv[8],"r");
-      if (filein == NULL) {
-        printf("Either input or output file did not open properly! Does it exist?\n");
-        exit_program(1);
-        return -1;
-      }
-
-      // read in the input file
-      for (i = 0; i < params[3]; i++) 
-        fscanf(filein, "%d ", &inpixels[i]);
-      fclose(filein);
-
-      params[4] = secondN;
-      params[5] = secondN*secondN;
-
-      if (params[0] == 1) {
-        for (i = 6; i < 6+params[5]; i++)
-          params[i] = 1;
-      }
-      else {
-        printf("Only blur operation is implemented. Please enter the coefficients for your custom operation.\n");
-        printf("Enter all %d coefficients in order from left to right with an enter after each.\n",params[5]);
-        for (i = 6; i < 6+params[5]; i++) 
-          scanf("%d",&params[i]);
-      }
-      
-      // use the parameters to perform the convolution
-      convolution(inpixels,params,outpixels);
-
-      // save the output to the output text file
-      FILE * fileout = fopen(argv[8],"w");
-      if (fileout == NULL) {
-        printf("File did not open properly! Does it exist?\n");
-        exit_program(1);
-        return 0;
-      }  
-      for (i = 0; i < params[3]; i++) 
-        fprintf(fileout, "%d ", outpixels[i]);
-      fclose(fileout);
-
-    } // end running of the second operation
-
-    exit_program(0);
-    return 0;
+    }  
+    for (i = 0; i < params[3]; i++) 
+      fprintf(fileout, "%d ", outpixels[i]);
+    fclose(fileout);
   }
 
-  printf("not sure how you got here.");
+  exit_program(0);
+  return 0;
+}
 
+
+// fill kernel()
+// description
+void fill_kernel(int op, int *params) {
+
+  int i;
+
+  // blur
+  if (op == 1) {
+    for (i = 6; i < 6+params[5]; i++)
+      params[i] = 1;
+  }
+  // separable coeffs
+  else if (op == 2) {
+    exit_program(6);
+  }
+  // custom coeffs 
+  else if (op == 3) {
+    printf("Please enter the coefficients for your custom operation\n");
+    printf("from left to right with an enter after each.\n",params[5]);
+    for (i = 6; i < 6+params[5]; i++) 
+      scanf("%d",&params[i]);
+  }
 }
 
 // convolution()
@@ -328,9 +248,28 @@ void convolution(int *inpixels,int *params,int *outpixels) {
 }
 
 int exit_program(int result) {
-  if (result == 1)
-    printf("The program will now exit. Please try again.\n");
-  if (result == 0)
-    printf("Program successfully completed.\n");
-  return 0;
+  switch (result) {
+    case 0:
+      printf("Program successfully completed.\n"); 
+      break;
+    case 1:
+      printf("Something's gone wrong but no idea what it was, sorry!.\n");
+      break;
+    case 2:
+      printf("Empty or illegal entry for operation choice.\n");
+      break;
+    case 3:
+      printf("Kernel matrix N in NxN must be an odd number.\n");
+      break;
+    case 4:
+      printf("N in kernel matrix NxN must be between 1 and 17.\n");
+      break;
+    case 5:
+      printf("First operation must be a valid operation.\n");
+    default:
+      return 0;
+      break;
+  }
+  printf("Program will now exit.\n");
+  exit(0);
 }
