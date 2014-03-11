@@ -1,5 +1,0 @@
-cmake_minimum_required(VERSION 2.8)
-project( ReconstructImage )
-find_package( OpenCV REQUIRED )
-add_executable( ReconstructImage ReconstructImage.cpp )
-target_link_libraries( ReconstructImage ${OpenCV_LIBS} )

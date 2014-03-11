@@ -1,1 +1,0 @@
-/home/wicker/proj/wicker/image-processing/opencv/PrintPixels/CMakeFiles/PrintPixels.dir

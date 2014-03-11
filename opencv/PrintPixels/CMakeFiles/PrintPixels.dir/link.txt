@@ -1,1 +1,0 @@
-/usr/bin/c++       CMakeFiles/PrintPixels.dir/PrintPixels.cpp.o  -o PrintPixels -rdynamic /usr/local/lib/libopencv_core.so.2.4.8 /usr/local/lib/libopencv_imgproc.so.2.4.8 /usr/local/lib/libopencv_video.so.2.4.8 /usr/local/lib/libopencv_imgproc.so.2.4.8 /usr/local/lib/libopencv_core.so.2.4.8 -Wl,-rpath,/usr/local/lib 
