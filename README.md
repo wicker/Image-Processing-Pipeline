@@ -17,9 +17,9 @@ Getpixels converts a color input image into a text file of its pixel values sepa
 
 It also converts a text file of pixel values back to an image.
 
-1. ./PrintPixel 1 brokentop.png brokentop.txt 240 320  
+1. ./GetPixels 1 brokentop.png brokentop.txt 240 320  
 2. use SystemVerilog or C program to modify pixels
-1. ./PrintPixel 2 brokentop.png brokentop.txt 240 320  
+1. ./GetPixels 2 brokentop.png brokentop.txt 240 320  
 
 SystemVerilog
 -------------
