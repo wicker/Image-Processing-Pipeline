@@ -11,13 +11,28 @@
 // take coefficients for all sizes
 // allow inputs for 1D separated, |*--
 
-#define ARGS 9
-
 #include <stdio.h>
 #include <stdlib.h>
 
+#define NUMARGS   9
+#define ARGIMAGE  1
+#define ARGWIDTH  2
+#define ARGHEIGHT 3
+#define ARGOP1    4
+#define ARGSIZE1  5
+#define ARGOP2    6
+#define ARGSIZE2  7
+#define ARGOUTPUT 8
+
 #define TRUE 0
 #define FALSE 1
+
+#define SUCCESS 0
+#define FAIL 1
+
+// parameters includes biggest kernel possible and arguments
+// 17*17 + 7 = 289 + 7 = 296 and round up => 300
+#define MAXPARAMS 300
 
 int exit_program(int);
 void convolution(int *inpixels,int *params,int *outpixels);
@@ -35,31 +50,31 @@ void fill_kernel(int op, int *params);
 int main(int argc, char *argv[]) {
 
   // check that we received the correct number of arguments
-  if (argc != 9) {
+  if (argc != NUMARGS) {
     printf("Input should look like this:\n");
     printf("./script input/input-brokentop.txt 240 320 <op> <kernel> <op> <kernel> output.txt\n");
     printf("where <op> is blur (1), max-viz (2), and custom (3) to be entered by the user.\n");
     printf("Kernel has to be N in NxN and it must be an odd number between 1 and 17.\n");
-    exit_program(1);
+    exit_program(FAIL);
     return -1;
   }
 
   FILE * fileout;
 
   // determine if the input file is even valid 
-  FILE * filein = fopen(argv[1],"r");
+  FILE * filein = fopen(argv[ARGIMAGE],"r");
   if (filein == NULL) {
     printf("File did not open properly! Does it exist?\n");
-    exit_program(1);
+    exit_program(FAIL);
     return -1;
   }
   
   // get width and height, then determine if they're in range
-  int width = atoi(argv[2]);
-  int height = atoi(argv[3]); 
+  int width = atoi(argv[ARGWIDTH]);
+  int height = atoi(argv3[ARGHEIGHT]);
   if (width <= 0 || width > 900 || height <= 0 || height > 900) {
     printf("Width and height values must be in range 0-900.\n");
-    exit_program(1);
+    exit_program(FAIL);
     return -1;
   }
 
@@ -67,11 +82,11 @@ int main(int argc, char *argv[]) {
   int inpixels[height*width];
   int outpixels[height*width];
 
-  int reps,i,params[300],firstflag,secondflag,whichop;
-  int firstop = atoi(argv[4]);
-  int firstN = atoi(argv[5]);
-  int secondop = atoi(argv[6]);
-  int secondN = atoi(argv[7]);
+  int reps,i,params[MAXPARAMS],firstflag,secondflag,whichop;
+  int firstop = atoi(argv[ARGOP1]);
+  int firstN = atoi(argv[ARGSIZE1]);
+  int secondop = atoi(argv[ARGOP2]);
+  int secondN = atoi(argv[ARGSIZE2]);
 
   // set operation order flags
   if (firstop == 0) firstflag = FALSE;
@@ -130,7 +145,7 @@ int main(int argc, char *argv[]) {
     fileout = fopen(argv[8],"w");
     if (fileout == NULL) {
       printf("File did not open properly! Does it exist?\n");
-      exit_program(1);
+      exit_program(FAIL);
     }  
     for (i = 0; i < params[3]; i++) 
       fprintf(fileout, "%d ", outpixels[i]);
@@ -148,7 +163,7 @@ int main(int argc, char *argv[]) {
     params[5] = firstN*firstN;
 
     // read in input pixels 
-    filein = fopen(argv[1],"r");
+    filein = fopen(argv[ARG],"r");
     for (i = 0; i < params[3]; i++) 
       fscanf(filein, "%d ", &inpixels[i]);
     fclose(filein);
@@ -161,17 +176,16 @@ int main(int argc, char *argv[]) {
     fileout = fopen(argv[8],"w");
     if (fileout == NULL) {
       printf("File did not open properly! Does it exist?\n");
-      exit_program(1);
+      exit_program(FAIL);
     }  
     for (i = 0; i < params[3]; i++) 
       fprintf(fileout, "%d ", outpixels[i]);
     fclose(fileout);
   }
 
-  exit_program(0);
+  exit_program(SUCCESS);
   return 0;
 }
-
 
 // fill kernel()
 // description
