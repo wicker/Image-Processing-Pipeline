@@ -4,7 +4,7 @@
 // LICENSE: http://creativecommons.org/licenses/by-sa/4.0/
 // DATE: 11-March-2014
 // 
-// Written using OpenCV 2.4.5.0 docs as well as 
+// Written using OpenCV 2.4.5.0 docs as well as Stack Overflow: 
 // http://stackoverflow.com/questions/7899108/opencv-get-pixel-information-from-mat-image
 //
 // ImagePixels is a simple tool that turns a color image into a text file
