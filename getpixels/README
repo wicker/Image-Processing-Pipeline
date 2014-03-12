@@ -1,11 +1,13 @@
 PROGRAM: ImagePixels v1
 
 AUTHOR: Jenner Hanni <jeh.wicker@gmail.com> 
-LICENSE: http:creativecommons.org/licenses/by-sa/4.0/
+LICENSE: http://creativecommons.org/licenses/by-sa/4.0/
 DATE: 11-March-2014
 
-Written using OpenCV 2.4.5.0 docs as well as Stack Overflow:
-http://stackoverflow.com/questions/7899108/opencv-get-pixel-information-from-mat-image
+Reference:
+
+(OpenCV 2.4.5.0 docs)[http://docs.opencv.org/index.html]
+(Stack Overflow)[http://stackoverflow.com/questions/7899108/opencv-get-pixel-information-from-mat-image]
 
 ImagePixels is a simple tool that turns a color image into a text file
 of grayscale pixels and back into a grayscale image. It's written for
