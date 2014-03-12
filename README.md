@@ -9,15 +9,17 @@ Released under the 3-clause BSD License.
 OpenCV
 ------
 
-PrintPixel takes an input PNG and outputs a text file with the grayscale value of the pixels separated by a space. 
+GetPixels: http://github.com/wicker/getpixels
+
+Getpixels converts a color input image into a text file of its pixel values separated by spaces:
 
 164 165 165 165 165 164 165 165 165 164 165 166 
 
-ReconstructImage takes an input text file with the same grayscale pixel values separated by a space and returns an output PNG. 
+It also converts a text file of pixel values back to an image.
 
-1. ./PrintPixel input.txt 240 320  
+1. ./PrintPixel 1 brokentop.png brokentop.txt 240 320  
 2. use SystemVerilog or C program to modify pixels
-3. ./ReconstructImage output.txt 240 320
+1. ./PrintPixel 2 brokentop.png brokentop.txt 240 320  
 
 SystemVerilog
 -------------
@@ -46,16 +48,15 @@ width of the image in pixels
 height of the image in pixels  
 x and y are convolution operations  
   1 - blur  
-  2 - edge  
-  3 - emboss  
-  4 - custom  
+  2 - separable 2d  
+  3 - custom 
 x1 and y1 are the size N of the kernel NxN
 
 Example:
 
-./main input.txt 240 320 1 17 2 3 output.txt
+./main input.txt 240 320 1 17 3 3 output.txt
 
-This reads in the pixels from input.txt into a height*width sized array and sets up the row and column counters. There will be two operations, first a blur with kernel 17x17 and then an edge with kernel 3x3. When the program finishes, output.txt will contain the new pixel values. 
+This reads in the pixels from input.txt into a height*width sized array and sets up the row and column counters. There will be two operations, first a blur with kernel 17x17 and then a custom operation with kernel 3x3. The custom operation will ask the user to fill the kernel by hand. When the program finishes, output.txt will contain the new pixel values. 
 
 ./main input.txt 240 320 1 17 0 0 output.txt
 
