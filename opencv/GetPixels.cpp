@@ -1,7 +1,8 @@
-// PROGRAM: ImagePixels
+// PROGRAM: ImagePixels v1
 //
 // AUTHOR: Jenner Hanni <jeh.wicker@gmail.com> 
-// LICENSE: http://opensource.org/licenses/BSD-3-Clause
+// LICENSE: http://creativecommons.org/licenses/by-sa/4.0/
+// DATE: 11-March-2014
 // 
 // Written using OpenCV 2.4.5.0 docs as well as 
 // http://stackoverflow.com/questions/7899108/opencv-get-pixel-information-from-mat-image
@@ -11,7 +12,7 @@
 // a program exploring convolution kernels in image processing.
 //
 // Usage:
-//   ./GetPixels <operation> <input file> <output file> <width> <height>
+//   ./GetPixels.o <operation> <input file> <output file> <width> <height>
 //
 // <operation>    1 for image -> text file
 //                2 for text file -> image
@@ -20,16 +21,15 @@
 // <width>        width of the image in pixels
 // <height>       height of the image in pixels
 //
-//
 // To get a text file of the pixels of a 800x600 mountain.png, try this:
-//   ./GetPixels 1 mountain.png pixels.txt 800 600
+//   ./GetPixels.o 1 mountain.png pixels.txt 800 600
 // To reconstruct an image from that pixel file, try this:
-//   ./GetPixels 2 mountainReconstructed.png pixels.txt 240 320
+//   ./GetPixels.o 2 mountainReconstructed.png pixels.txt 240 320
 //
 // Note: mountain.png and mountainReconstructed.png should be identical.
 //
 // I built the program with OpenCV 2.4.8 and these GCC flags:
-//   g++ -o GetPixels GetPixels.cpp `pkg-config --cflags --libs opencv` \
+//   g++ -o GetPixels.o GetPixels.cpp `pkg-config --cflags --libs opencv` \
 //   -L/usr/local/lib -lopencv_core -lopencv_highgui
 //
 
@@ -66,7 +66,14 @@ int main(int argc, char* argv[] )
 
   switch(op) {
     case 1:
-      printf("Now taking the image and turning it into a text file of pixels.\n");
+      printf("You want to turn your image into a text file of pixels.\n");
+      // check that the input file exists
+      infile.open(argv[ARGIMAGE]);
+      if (!infile) {
+        cout << ("Cannot open the input image file. Is your path valid?\n");
+        return -1;
+      }
+      infile.close();
       // read in the image pixels into the pixel array
       pixels = imread(argv[ARGIMAGE],0);
       // display the image until the user presses a key
@@ -82,11 +89,12 @@ int main(int argc, char* argv[] )
       outfile.close();
       break;
     case 2:
-      printf("Now taking the text file of pixels and turning it into an image.\n");
+      printf("You want to turn your text file of pixels into an image.\n");
       // read in the text file pixel of integer values into an array
       infile.open(argv[ARGPIXELS]);
       if (!infile) {
-        cout << ("Cannot open the output file.\n");
+        cout << ("Cannot open the input pixel file. Is your path valid?\n");
+        return -1;
       }
       // read in the text file pixel of integer values into an array
       for (int rows = 0; rows < pixels.rows; rows++) {
