@@ -217,22 +217,25 @@ void fill_kernel(int op, int *params) {
     for (i = 0; i < params[4]; i++) {
       printf("horz[%d] = %d and vert[%d] = %d\n",i,horz[i],i,vert[i]);
     }
-     exit(0);
     // then fill the params in the right order
-    // remember not to store the middle section twice
-    for (i = 0; i < params[4]+params[4]-1; i++) {
-      if (i < 5/2+1) {
+    // the center is only filled with the horizontal center
+    // the offset in case #3 is to skip the center vertical value
+    for (i = 0; i < params[4]*2-1; i++) {
+      if (i < params[4]/2) {                // case 1: rows < center
         params[6+i] = vert[v];
         v++;
       }
-      else if (i <= 5+5/2) {
+      else if (i < params[4]+params[4]/2) { // case 2: center row
         params[6+i] = horz[h];
-      } 
-      else {
-        params[6+i] = vert[v];
+        h++;
+      }
+      else {                                // case 3: rows > center
+        params[6+i] = vert[v+1];
         v++;
       }
+    
     }
+
   }
   // custom coeffs 
   else if (op == 3) {
