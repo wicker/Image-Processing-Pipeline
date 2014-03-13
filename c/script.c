@@ -71,7 +71,7 @@ int main(int argc, char *argv[]) {
   
   // get width and height, then determine if they're in range
   int width = atoi(argv[ARGWIDTH]);
-  int height = atoi(argv3[ARGHEIGHT]);
+  int height = atoi(argv[ARGHEIGHT]);
   if (width <= 0 || width > 900 || height <= 0 || height > 900) {
     printf("Width and height values must be in range 0-900.\n");
     exit_program(FAIL);
@@ -142,7 +142,7 @@ int main(int argc, char *argv[]) {
     convolution(inpixels,params,outpixels);
 
     // prep output file
-    fileout = fopen(argv[8],"w");
+    fileout = fopen(argv[ARGOUTPUT],"w");
     if (fileout == NULL) {
       printf("File did not open properly! Does it exist?\n");
       exit_program(FAIL);
@@ -163,7 +163,7 @@ int main(int argc, char *argv[]) {
     params[5] = firstN*firstN;
 
     // read in input pixels 
-    filein = fopen(argv[ARG],"r");
+    filein = fopen(argv[ARGIMAGE],"r");
     for (i = 0; i < params[3]; i++) 
       fscanf(filein, "%d ", &inpixels[i]);
     fclose(filein);
@@ -173,7 +173,7 @@ int main(int argc, char *argv[]) {
     convolution(inpixels,params,outpixels);
 
     // prep output file
-    fileout = fopen(argv[8],"w");
+    fileout = fopen(argv[ARGOUTPUT],"w");
     if (fileout == NULL) {
       printf("File did not open properly! Does it exist?\n");
       exit_program(FAIL);
@@ -192,15 +192,47 @@ int main(int argc, char *argv[]) {
 void fill_kernel(int op, int *params) {
 
   int i;
+  int v = 0;
+  int h = 0;
+  int line = params[4];
+  int horz[line];
+  int vert[line];
 
   // blur
   if (op == 1) {
     for (i = 6; i < 6+params[5]; i++)
       params[i] = 1;
   }
-  // separable coeffs
+  // separable coeffs, remember to take out the middle one so total num is N+N-1
   else if (op == 2) {
-    exit_program(6);
+    // first, fill the horizontal and vertical arrays
+    printf("Please enter the %d horizontal coefficients, separated by a space.\n",params[4]);
+    for (i = 0; i < params[4]; i++)
+      scanf("%d",&horz[i]);
+    printf("Please enter the %d vertical coefficients, separated by a space.\n",params[4]);
+    for (i = 0; i < params[4]; i++) {
+      if (i < params[4])
+        scanf("%d",&vert[i]);
+    }
+    for (i = 0; i < params[4]; i++) {
+      printf("horz[%d] = %d and vert[%d] = %d\n",i,horz[i],i,vert[i]);
+    }
+     exit(0);
+    // then fill the params in the right order
+    // remember not to store the middle section twice
+    for (i = 0; i < params[4]+params[4]-1; i++) {
+      if (i < 5/2+1) {
+        params[6+i] = vert[v];
+        v++;
+      }
+      else if (i <= 5+5/2) {
+        params[6+i] = horz[h];
+      } 
+      else {
+        params[6+i] = vert[v];
+        v++;
+      }
+    }
   }
   // custom coeffs 
   else if (op == 3) {
@@ -232,14 +264,30 @@ void convolution(int *inpixels,int *params,int *outpixels) {
       // reset the output for this pixel
       t = 0; 
       discardpix = 0;
+      int r = 0;
 
       for (kcount = 6,krow = 1,kx = -kcols/2; krow <= krows; krow++,kx++) {
         for (kcol = 1,ky = -kcols/2; kcol <= kcols; kcol++,kcount++,ky++) {
+
           if (kx + irow <= 0 || ky + icol <= 0 || kx + irow > irows || ky + icol > icols)
             discardpix++;
           else
-              t += params[kcount]*inpixels[i+kx*icols+ky];
+            // separable horizontal and vertical operations
+            if (params[0] == 2) {
+                if (kx == 0 || ky == 0) {
+                  t += params[6+r]*inpixels[i+kx*icols+ky];
+                  r++;
+//                printf("Kx = %d, Ky = %d, Krows: %d, Kcols: %d\t",kx,ky,krows,kcols);
+//                printf("r = %d, t = %d, params[6+r] = %d\n",r,t,params[6+r]);
 
+                }
+                else
+                  discardpix++;
+            }
+            // otherwise it's a full kernel convolution
+            else {
+              t += params[6]*inpixels[i+kx*icols+ky];
+            }
         }
       }
 
