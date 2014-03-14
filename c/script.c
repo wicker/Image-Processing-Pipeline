@@ -35,8 +35,8 @@
 #define MAXPARAMS 300
 
 int exit_program(int);
-void convolution(int *inpixels,int *params,int *outpixels);
-void fill_kernel(int op, int *params);
+void convolution(int *inpixels,double *params,int *outpixels);
+void fill_kernel(int op, double *params);
 
 // main()
 // 1. receives args and error checks inputs
@@ -82,7 +82,8 @@ int main(int argc, char *argv[]) {
   int inpixels[height*width];
   int outpixels[height*width];
 
-  int reps,i,params[MAXPARAMS],firstflag,secondflag,whichop;
+  int reps,i,firstflag,secondflag,whichop;
+  double params[MAXPARAMS];
   int firstop = atoi(argv[ARGOP1]);
   int firstN = atoi(argv[ARGSIZE1]);
   int secondop = atoi(argv[ARGOP2]);
@@ -189,12 +190,12 @@ int main(int argc, char *argv[]) {
 
 // fill kernel()
 // description
-void fill_kernel(int op, int *params) {
+void fill_kernel(int op, double *params) {
 
   int i;
   int v = 0;
   int h = 0;
-  int line = params[4];
+  int line = (int)params[4];
   int horz[line];
   int vert[line];
 
@@ -206,10 +207,10 @@ void fill_kernel(int op, int *params) {
   // separable coeffs, remember to take out the middle one so total num is N+N-1
   else if (op == 2) {
     // first, fill the horizontal and vertical arrays
-    printf("Please enter the %d horizontal coefficients, separated by a space.\n",params[4]);
+    printf("Please enter the %d horizontal coefficients, separated by a space.\n",line);
     for (i = 0; i < params[4]; i++)
       scanf("%d",&horz[i]);
-    printf("Please enter the %d vertical coefficients, separated by a space.\n",params[4]);
+    printf("Please enter the %d vertical coefficients, separated by a space.\n",line);
     for (i = 0; i < params[4]; i++) {
       if (i < params[4])
         scanf("%d",&vert[i]);
@@ -236,20 +237,20 @@ void fill_kernel(int op, int *params) {
     
     }
 
-  }
+  } 
   // custom coeffs 
   else if (op == 3) {
     printf("Please enter the coefficients for your custom operation\n");
     printf("from left to right with an enter after each.\n",params[5]);
     for (i = 6; i < 6+params[5]; i++) 
-      scanf("%d",&params[i]);
+      scanf("%lf",&params[i]);
   }
 }
 
 // convolution()
 // uses the given params array to iterate through each image pixel
 // and calculate a new output based on the pixel's nearby neighbors
-void convolution(int *inpixels,int *params,int *outpixels) {
+void convolution(int *inpixels,double *params,int *outpixels) {
 
   int t = 0;
   int i,irow,icol,krow,kcol,kx,ky,kcount,discardpix;
@@ -297,7 +298,7 @@ void convolution(int *inpixels,int *params,int *outpixels) {
       // if this is a blur coefficients=1 operation,
       // get the average of the summed result of the kernel coefficients over the input pixels
       // discardpix is the number of pixels that were off the edge of the image and unusable
-      if (params[0] == 1)
+      if (params[0] == 1 || 2)
         t = t/(params[5]-discardpix);
       else 
         t = t;
