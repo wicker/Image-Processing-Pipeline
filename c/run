@@ -1,12 +1,12 @@
-./script input/input-brokentop.txt 240 320 2 3 0 0 output-horz.txt
-./script input/input-brokentop.txt 240 320 2 3 0 0 output-horz2.txt
-./script input/input-brokentop.txt 240 320 2 3 0 0 output-sobel-h.txt
-./script input/input-brokentop.txt 240 320 2 3 0 0 output-vert.txt
-./script input/input-brokentop.txt 240 320 2 3 0 0 output-vert2.txt
-./script input/input-brokentop.txt 240 320 2 3 0 0 output-sobel-v.txt
-./script input/input-brokentop.txt 240 320 2 3 0 0 output-45deg.txt
-./script input/input-brokentop.txt 240 320 2 3 0 0 output-laplace.txt
-./script input/input-brokentop.txt 240 320 2 3 0 0 output-135deg.txt
-./script input/input-brokentop.txt 240 320 2 3 0 0 output-oops.txt
-./script input/input-brokentop.txt 240 320 2 3 0 0 output-sharper.txt
+./main.o input/input-brokentop.txt 240 320 2 3 0 0 output-horz.txt
+./main.o input/input-brokentop.txt 240 320 2 3 0 0 output-horz2.txt
+./main.o input/input-brokentop.txt 240 320 2 3 0 0 output-sobel-h.txt
+./main.o input/input-brokentop.txt 240 320 2 3 0 0 output-vert.txt
+./main.o input/input-brokentop.txt 240 320 2 3 0 0 output-vert2.txt
+./main.o input/input-brokentop.txt 240 320 2 3 0 0 output-sobel-v.txt
+./main.o input/input-brokentop.txt 240 320 2 3 0 0 output-45deg.txt
+./main.o input/input-brokentop.txt 240 320 2 3 0 0 output-laplace.txt
+./main.o input/input-brokentop.txt 240 320 2 3 0 0 output-135deg.txt
+./main.o input/input-brokentop.txt 240 320 2 3 0 0 output-oops.txt
+./main.o input/input-brokentop.txt 240 320 2 3 0 0 output-sharper.txt
 
