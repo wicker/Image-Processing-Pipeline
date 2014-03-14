@@ -53,7 +53,7 @@ int main(int argc, char *argv[]) {
   if (argc != NUMARGS) {
     printf("Input should look like this:\n");
     printf("./script input/input-brokentop.txt 240 320 <op> <kernel> <op> <kernel> output.txt\n");
-    printf("where <op> is blur (1), max-viz (2), and custom (3) to be entered by the user.\n");
+    printf("where <op> is uniform blur (1), separable convolution (2), and custom (3) to be entered by the user.\n");
     printf("Kernel has to be N in NxN and it must be an odd number between 1 and 17.\n");
     exit_program(FAIL);
     return -1;
@@ -199,7 +199,7 @@ void fill_kernel(int op, double *params) {
   int horz[line];
   int vert[line];
 
-  // blur
+  // uniform blur
   if (op == 1) {
     for (i = 6; i < 6+params[5]; i++)
       params[i] = 1;
@@ -295,7 +295,7 @@ void convolution(int *inpixels,double *params,int *outpixels) {
         }
       }
 
-      // if this is a blur coefficients=1 operation,
+      // if this is a uniform blur with coefficients = 1
       // get the average of the summed result of the kernel coefficients over the input pixels
       // discardpix is the number of pixels that were off the edge of the image and unusable
       if (params[0] == 1 || 2)
