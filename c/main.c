@@ -75,7 +75,7 @@ int main(int argc, char *argv[]) {
   int inpixels[height*width];
   int outpixels[height*width];
 
-  int reps,i,firstflag,secondflag,whichop;
+  int reps,i,firstflag,secondflag,nextop;
   double params[MAXPARAMS];
   int firstop = atoi(argv[ARGOP1]);
   int firstN = atoi(argv[ARGSIZE1]);
@@ -89,9 +89,9 @@ int main(int argc, char *argv[]) {
   else secondflag = TRUE;
 
   if (firstflag == TRUE && secondflag == TRUE)
-    whichop = 2;
+    nextop = 1;
   else if (firstflag == TRUE && secondflag == FALSE)
-    whichop = 1;
+    nextop = 0;
   else if (firstflag == FALSE)
     exit_program(5);
 
@@ -116,7 +116,40 @@ int main(int argc, char *argv[]) {
   // now for each operation, 
   // prep params with its inputs, including reading appropriate input file
   // then perform the convolution and produce the output file
-  if (whichop == 2) {
+  //
+  // do the first op no matter what
+  //
+  // first, store parameter values
+  params[0] = firstop;
+  params[1] = height;
+  params[2] = width;
+  params[3] = height*width;
+  params[4] = firstN;
+  params[5] = firstN*firstN;
+
+  // read in input pixels 
+  filein = fopen(argv[ARGIMAGE],"r");
+  for (i = 0; i < params[3]; i++) 
+    fscanf(filein, "%d ", &inpixels[i]);
+  fclose(filein);
+
+  // read in coefficients from user and perform convolution
+  fill_kernel(params[0],params);
+  convolution(inpixels,params,outpixels);
+
+  // prep output file
+  fileout = fopen(argv[ARGOUTPUT],"w");
+  if (fileout == NULL) {
+    printf("File did not open properly! Does it exist?\n");
+    exit_program(FAIL);
+  }  
+  for (i = 0; i < params[3]; i++) 
+    fprintf(fileout, "%d ", outpixels[i]);
+  fclose(fileout);
+
+  // if the next operation is zero, there is no second operation
+  // otherwise, go ahead and perform the second operation
+  if (nextop == 1) {
     // store parameter values
     params[0] = secondop;
     params[1] = height;
@@ -127,37 +160,6 @@ int main(int argc, char *argv[]) {
 
     // read in input pixels
     filein = fopen(argv[8],"r");    
-    for (i = 0; i < params[3]; i++) 
-      fscanf(filein, "%d ", &inpixels[i]);
-    fclose(filein);
-
-    // read in coefficients from user and perform convolution
-    fill_kernel(params[0],params);
-    convolution(inpixels,params,outpixels);
-
-    // prep output file
-    fileout = fopen(argv[ARGOUTPUT],"w");
-    if (fileout == NULL) {
-      printf("File did not open properly! Does it exist?\n");
-      exit_program(FAIL);
-    }  
-    for (i = 0; i < params[3]; i++) 
-      fprintf(fileout, "%d ", outpixels[i]);
-    fclose(fileout);
-
-    whichop--;
-  }
-  if (whichop == 1) {
-    // store parameter values
-    params[0] = firstop;
-    params[1] = height;
-    params[2] = width;
-    params[3] = height*width;
-    params[4] = firstN;
-    params[5] = firstN*firstN;
-
-    // read in input pixels 
-    filein = fopen(argv[ARGIMAGE],"r");
     for (i = 0; i < params[3]; i++) 
       fscanf(filein, "%d ", &inpixels[i]);
     fclose(filein);
