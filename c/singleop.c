@@ -15,16 +15,31 @@
 #define ARGHEIGHT 3
 #define ARGOP1    4
 #define ARGSIZE1  5
-#define ARGOUTPUT 6
+#define ARGNORM   6
+#define ARGOUTPUT 7
 
-#define PIXELMIN 0
-#define PIXELMAX 255
+#define PIXELMIN  0
+#define PIXELMAX  255
 
-#define TRUE 0
-#define FALSE 1
+#define MINHEIGHT 0
+#define MAXHEIGHT 900
+#define MINWIDTH  0
+#define MAXWIDTH  900
 
-#define SUCCESS 0
-#define FAIL 1
+#define TRUE      0
+#define FALSE     1
+
+#define SUCCESS   0
+#define FAIL      1
+
+#define OPMIN     1
+#define OP_1DH    1
+#define OP_1DV    2
+#define OP_CUSTOM 3
+#define OPMAX     3
+
+#define CONVMIN   1
+#define CONVMAX   17
 
 // parameters includes biggest kernel possible and arguments
 // 17*17 + 7 = 289 + 7 = 296 and round up => 300
@@ -72,16 +87,13 @@ int main(int argc, char *argv[]) {
     exit_program(5);
     return -1;
   }
-  else {
-    printf("  The program thinks you want to perform a %dx%d kernel operation on a %dx%d image.\n");
-  }
 
   FILE * fileout;
 
   // determine if the input file is even valid 
   FILE * filein = fopen(argv[ARGIMAGE],"r");
   if (filein == NULL) {
-    printf("File did not open properly! Does it exist?\n");
+    printf("  File did not open properly! Does it exist?\n");
     exit_program(FAIL);
     return -1;
   }
@@ -89,8 +101,8 @@ int main(int argc, char *argv[]) {
   // get width and height, then determine if they're in range
   int width = atoi(argv[ARGWIDTH]);
   int height = atoi(argv[ARGHEIGHT]);
-  if (width <= 0 || width > 900 || height <= 0 || height > 900) {
-    printf("Width and height values must be in range 0-900.\n");
+  if (width <= MINHEIGHT || width > MAXWIDTH || height <= MINHEIGHT || height > MAXHEIGHT) {
+    printf("  Width and height values must be in range 0-900.\n");
     exit_program(FAIL);
     return -1;
   }
@@ -104,12 +116,15 @@ int main(int argc, char *argv[]) {
   int op = atoi(argv[ARGOP1]);
   int N = atoi(argv[ARGSIZE1]);
 
+  // print out to the user what we think we're doing this time around
+  printf("  The program thinks you want to perform a %dx%d kernel operation on a %dx%d image.\n",N,N,width,height);
+  
   // error check the inputs for each operation and return errors to user if invalid
-  if (op < 1 || op > 4)
+  if (op < OPMIN || op > OPMAX)
     exit_program(2);
   else if (N %2 == 0)
     exit_program(3);
-  else if (N < 1 || N > 17)
+  else if (N < CONVMIN || N > CONVMAX)
     exit_program(4);
 
   // prep params with the operation inputs, including reading appropriate input file
@@ -136,7 +151,7 @@ int main(int argc, char *argv[]) {
   // prep output file
   fileout = fopen(argv[ARGOUTPUT],"w");
   if (fileout == NULL) {
-    printf("File did not open properly! Does it exist?\n");
+    printf("  File did not open properly! Does it exist?\n");
     exit_program(FAIL);
   }  
   for (i = 0; i < params[PARAM_TOTALPIX]; i++) 
@@ -151,34 +166,25 @@ int main(int argc, char *argv[]) {
 void fill_kernel(int op, double *params) {
 
   int i;
-  int v = 0;
-  int h = 0;
-  int line = (int)params[4];
+  int line = (int)params[PARAM_N];
   double horz[line];
   double vert[line];
 
-  // uniform blur
-  if (op == 1) {
-    for (i = 6; i < 6+params[5]; i++)
-      params[i] = 1;
-  }
   // 1D horizontal or vertical coefficients
-  else if (op == 2 || op == 3) {
+  if (op == OP_1DH || op == OP_1DV) {
     // poll the user appropriately
-    if (op == 2)
-      printf("Please enter the %d horizontal coefficients, separated by a space or enter.\n",line);
-    else if (op == 3)
-      printf("Please enter the %d vertical coefficients, separated by a space or enter.\n",line);
+    if (op == OP_1DH) printf("  Please enter the %d horizontal coefficients, separated by a space or enter.\n",line);
+    else              printf("  Please enter the %d vertical coefficients, separated by a space or enter.\n",line);
     // in either case, fill the params the same way
-    for (i = 0; i < params[4]; i++) {
-      scanf("%lf",&params[6+i]);
+    for (i = 0; i < params[PARAM_N]; i++) {
+      scanf("%lf",&params[PARAM_COEFSTART+i]);
     }
   }
   // custom coeffs 
-  else if (op == 4) {
-    printf("Please enter the coefficients for your custom operation\n");
-    printf("from left to right with an enter after each.\n",params[5]);
-    for (i = 6; i < 6+params[5]; i++) 
+  else if (op == OP_CUSTOM) {
+    printf("  Please enter the coefficients for your custom operation\n");
+    printf("  from left to right with an enter after each.\n",params[PARAM_TOTALKERNEL]);
+    for (i = PARAM_COEFSTART; i < PARAM_COEFSTART+params[PARAM_TOTALKERNEL]; i++) 
       scanf("%lf",&params[i]);
   }
 }
@@ -240,7 +246,7 @@ void convolution(int *inpixels,double *params,int *outpixels) {
       // if this is a uniform blur with coefficients = 1
       // get the average of the summed result of the kernel coefficients over the input pixels
       // discardpix is the number of pixels that were off the edge of the image and unusable
-      if (params[PARAM_OP] == 1 || params[PARAM_OP] == 2 || params[PARAM_OP] == 3)
+      if (params[PARAM_OP] == OP_1DH || params[PARAM_OP] == OP_1DV || params[PARAM_OP] == OP_CUSTOM)
         t = t/(params[PARAM_TOTALKERNEL]-discardpix);
       else 
         t = t;
@@ -252,6 +258,7 @@ void convolution(int *inpixels,double *params,int *outpixels) {
         outpixels[i] = PIXELMAX;
       else
         outpixels[i] = t;
+      printf("%lf\n",t);
     }
   }
 }
