@@ -51,7 +51,8 @@
 #define PARAM_TOTALPIX    3
 #define PARAM_N           4
 #define PARAM_TOTALKERNEL 5
-#define PARAM_COEFSTART   6
+#define PARAM_NORM        6
+#define PARAM_COEFSTART   7
 
 int exit_program(int);
 void convolution(int *inpixels,double *params,int *outpixels);
@@ -85,7 +86,6 @@ int main(int argc, char *argv[]) {
     printf("  <norm> is [0] no or [1] yes to normalize (divide by number of coefficients) the image.\n");
     printf("  <output.txt> is the text file to store resulting grayscale image pixel values.\n\n");
     exit_program(5);
-    return -1;
   }
 
   FILE * fileout;
@@ -95,7 +95,6 @@ int main(int argc, char *argv[]) {
   if (filein == NULL) {
     printf("  File did not open properly! Does it exist?\n");
     exit_program(FAIL);
-    return -1;
   }
   
   // get width and height, then determine if they're in range
@@ -104,7 +103,6 @@ int main(int argc, char *argv[]) {
   if (width <= MINHEIGHT || width > MAXWIDTH || height <= MINHEIGHT || height > MAXHEIGHT) {
     printf("  Width and height values must be in range 0-900.\n");
     exit_program(FAIL);
-    return -1;
   }
 
   // create inpixels and outpixels arrays from the input height and width
@@ -115,6 +113,12 @@ int main(int argc, char *argv[]) {
   double params[MAXPARAMS];
   int op = atoi(argv[ARGOP1]);
   int N = atoi(argv[ARGSIZE1]);
+
+  // store normalize flag
+  int norm = atoi(argv[ARGNORM]);
+  if (norm < 0 || norm > 1)
+    exit_program(6);
+
 
   // print out to the user what we think we're doing this time around
   printf("  The program thinks you want to perform a %dx%d kernel operation on a %dx%d image.\n",N,N,width,height);
@@ -137,8 +141,9 @@ int main(int argc, char *argv[]) {
   params[PARAM_TOTALPIX] = height*width;
   params[PARAM_N] = N;
   params[PARAM_TOTALKERNEL] = N*N;
+  params[PARAM_NORM] = norm;
 
-  // read in input pixels 
+  // read input pixels 
   filein = fopen(argv[ARGIMAGE],"r");
   for (i = 0; i < params[PARAM_TOTALPIX]; i++) 
     fscanf(filein, "%d ", &inpixels[i]);
@@ -195,7 +200,7 @@ void fill_kernel(int op, double *params) {
 void convolution(int *inpixels,double *params,int *outpixels) {
 
   double t = 0;
-  int i,irow,icol,krow,kcol,kx,ky,kcount,discardpix,r;
+  int i,irow,icol,krow,kcol,kx,ky,kcount,discardpix,r,k;
   int irows = params[PARAM_HEIGHT];
   int icols = params[PARAM_WIDTH]; 
   int krows = params[PARAM_N];
@@ -211,45 +216,47 @@ void convolution(int *inpixels,double *params,int *outpixels) {
       t = 0; 
       discardpix = 0;
       r = 0;
+      k = 0;
 
-      for (kcount = PARAM_COEFSTART,krow = 1,kx = -kcols/2; krow <= krows; krow++,kx++) {
+      for (kcount = PARAM_COEFSTART,krow = 1,kx = -krows/2; krow <= krows; krow++,kx++) {
         for (kcol = 1,ky = -kcols/2; kcol <= kcols; kcol++,kcount++,ky++) {
-
           if (kx + irow <= 0 || ky + icol <= 0 || kx + irow > irows || ky + icol > icols) {
             discardpix++;
-//            r++;
+            printf("EDGE CASE irow %d icol %d kx %d ky %d\n",irow,icol,kx,ky);
+            r++;
           }
           else
-            if (params[PARAM_OP] == 2) {  // 1D horizontal operation 
+            if (params[PARAM_OP] == OP_1DH) {  // 1D horizontal operation 
                 if (kx == 0) {
-                  t += params[PARAM_COEFSTART+r]*inpixels[i+kx*icols+ky];
-                  r++;
+                  t += params[PARAM_COEFSTART+k]*inpixels[i+kx*icols+ky];
+                  k++;
                 }
                 else
                   discardpix++;
             }
-            else if (params[PARAM_OP] == 3) {  // 1D vertical operation 
+            else if (params[PARAM_OP] == OP_1DV) {  // 1D vertical operation 
                 if (ky == 0) {
-                  t += params[PARAM_COEFSTART+r]*inpixels[i+kx*icols+ky];
-                  r++;
+                  t += params[PARAM_COEFSTART+k]*inpixels[i+kx*icols+ky];
+                  k++;
                 }
                 else
                   discardpix++;
             }
             else {  // otherwise it's a full kernel convolution 
               t += params[PARAM_COEFSTART+r]*inpixels[i+kx*icols+ky];
+              printf("ACTUAL PIXEL t %lf r %d i %d kx %d icols %d ky %d\n",t,r,i,kx,icols,ky);
               r++;
-            }
+          }
         }
       }
 
-      // if this is a uniform blur with coefficients = 1
-      // get the average of the summed result of the kernel coefficients over the input pixels
-      // discardpix is the number of pixels that were off the edge of the image and unusable
-      if (params[PARAM_OP] == OP_1DH || params[PARAM_OP] == OP_1DV || params[PARAM_OP] == OP_CUSTOM)
+      // check if we need to normalize (average) the image
+      if (params[PARAM_NORM] == FALSE) {
         t = t/(params[PARAM_TOTALKERNEL]-discardpix);
-      else 
+      }
+      else  {
         t = t;
+      }
 
       // bound the pixel at the min and max (for grayscale this is 0 and 255)
       if (t < PIXELMIN) 
@@ -284,6 +291,8 @@ int exit_program(int result) {
       break;
     case 5:
       printf("  Try again. ");
+    case 6:
+      printf("  Normalize value must be 0 for no or 1 for yes. ");
     default:
       break;
   }
