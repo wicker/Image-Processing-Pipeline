@@ -1,0 +1,10 @@
+./GetPixels.o 2 output-sobel-x-full.png output-sobel-x-full.txt 240 320
+./GetPixels.o 2 output-sobel-x-h.png output-sobel-x-h.txt 240 320
+./GetPixels.o 2 output-sobel-x-v.png output-sobel-x-v.txt 240 320
+./GetPixels.o 2 output-sobel-x-hv.png output-sobel-x-hv.txt 240 320
+./GetPixels.o 2 output-sobel-x-vh.png output-sobel-x-vh.txt 240 320
+./GetPixels.o 2 output-sobel-y-full.png output-sobel-y-full.txt 240 320
+./GetPixels.o 2 output-sobel-y-h.png output-sobel-y-h.txt 240 320
+./GetPixels.o 2 output-sobel-y-v.png output-sobel-y-v.txt 240 320
+./GetPixels.o 2 output-sobel-y-hv.png output-sobel-y-hv.txt 240 320
+./GetPixels.o 2 output-sobel-y-vh.png output-sobel-y-vh.txt 240 320

@@ -1,11 +1,10 @@
 // Image convolution
 // Jenner Hanni <jeh.wicker.gmail.com>
 // 3-clause BSD license
-//
-// Script version that takes more inputs from the command line
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
 
 #define NUMARGS   9
 #define ARGIMAGE  1
@@ -225,8 +224,8 @@ void fill_kernel(int op, double *params) {
 // and calculate a new output based on the pixel's nearby neighbors
 void convolution(int *inpixels,double *params,int *outpixels) {
 
-  int t = 0;
-  int i,irow,icol,krow,kcol,kx,ky,kcount,discardpix;
+  double t = 0;
+  int i,irow,icol,krow,kcol,kx,ky,kcount,discardpix,r;
   int irows = params[1];
   int icols = params[2]; 
   int krows = params[4];
@@ -241,7 +240,7 @@ void convolution(int *inpixels,double *params,int *outpixels) {
       // reset the output for this pixel
       t = 0; 
       discardpix = 0;
-      int r = 0;
+      r = 0;
 
       for (kcount = 6,krow = 1,kx = -kcols/2; krow <= krows; krow++,kx++) {
         for (kcol = 1,ky = -kcols/2; kcol <= kcols; kcol++,kcount++,ky++) {
@@ -253,6 +252,7 @@ void convolution(int *inpixels,double *params,int *outpixels) {
             if (params[0] == 2) {
                 if (kx == 0) {
                   t += params[6+r]*inpixels[i+kx*icols+ky];
+  //                printf("OP2 i+kx*icols+ky = %d+%d*%d+%d=%d\n",i,kx,icols,ky,i+kx*icols+ky);
                   r++;
                 }
                 else
@@ -262,6 +262,7 @@ void convolution(int *inpixels,double *params,int *outpixels) {
             else if (params[0] == 3) {
                 if (ky == 0) {
                   t += params[6+r]*inpixels[i+kx*icols+ky];
+//                  printf("OP3 i+kx*icols+ky = %d+%d*%d+%d=%d\n",i,kx,icols,ky,i+kx*icols+ky);
                   r++;
                 }
                 else
@@ -269,25 +270,31 @@ void convolution(int *inpixels,double *params,int *outpixels) {
             }
             // otherwise it's a full kernel convolution
             else {
-              t += params[6]*inpixels[i+kx*icols+ky];
+              t += params[6+r]*inpixels[i+kx*icols+ky];
+              r++;
+//              printf("OP4 i+kx*icols+ky = %d+%d*%d+%d=%d so inpixels[i+kx*icols+ky] = %d and params[6+r] = %lf so t = %lf\n",i,kx,icols,ky,i+kx*icols+ky,inpixels[i+kx*icols+ky],params[6+r],t);
             }
+//            printf("kcount %d krow %d kcol %d kx %d ky %d inpixels[%d] = %d r %d t %lf\n",kcount,krow,kcol,kx,ky,i+kx*icols+ky,inpixels[i+kx*icols+ky],r,t);
         }
       }
 
       // if this is a uniform blur with coefficients = 1
       // get the average of the summed result of the kernel coefficients over the input pixels
       // discardpix is the number of pixels that were off the edge of the image and unusable
-      if (params[0] == 1 || 2)
+      if (params[0] == 1 || params[0] == 2 || params[0] == 3)
         t = t/(params[5]-discardpix);
       else 
         t = t;
 
-      if (t < 0)
-        outpixels[i] = 0;
+      if (t < 0) {
+        outpixels[i] = t;
+        printf(".");
+      }
       else if (t > 255)
         outpixels[i] = 255;
       else
         outpixels[i] = t;
+      printf("outpixels[i]: %d\n",outpixels[i]);
     }
   }
 }
