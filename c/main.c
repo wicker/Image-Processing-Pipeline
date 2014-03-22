@@ -178,8 +178,8 @@ void fill_kernel(int op, double *params) {
   // 1D horizontal or vertical coefficients
   if (op == OP_1DH || op == OP_1DV) {
     // poll the user appropriately
-    if (op == OP_1DH) printf("  Please enter the %d horizontal coefficients, separated by a space or enter.\n",line);
-    else              printf("  Please enter the %d vertical coefficients, separated by a space or enter.\n",line);
+    if (op == OP_1DH) printf("  Please enter the %d 1D horizontal coefficients, separated by a space or enter.\n",line);
+    else              printf("  Please enter the %d 1D vertical coefficients, separated by a space or enter.\n",line);
     // in either case, fill the params the same way
     for (i = 0; i < params[PARAM_N]; i++) {
       scanf("%lf",&params[PARAM_COEFSTART+i]);
@@ -187,8 +187,9 @@ void fill_kernel(int op, double *params) {
   }
   // custom coeffs 
   else if (op == OP_CUSTOM) {
-    printf("  Please enter the coefficients for your custom operation\n");
-    printf("  from left to right with an enter after each.\n",params[PARAM_TOTALKERNEL]);
+    printf("  Please enter the %d coefficients for your custom 2D operation\n",(int)params[PARAM_TOTALKERNEL]);
+    printf("  from left to right with an enter after each.\n");
+      printf("  ");
     for (i = PARAM_COEFSTART; i < PARAM_COEFSTART+params[PARAM_TOTALKERNEL]; i++) 
       scanf("%lf",&params[i]);
   }
@@ -222,7 +223,6 @@ void convolution(int *inpixels,double *params,int *outpixels) {
         for (kcol = 1,ky = -kcols/2; kcol <= kcols; kcol++,kcount++,ky++) {
           if (kx + irow <= 0 || ky + icol <= 0 || kx + irow > irows || ky + icol > icols) {
             discardpix++;
-            printf("EDGE CASE irow %d icol %d kx %d ky %d\n",irow,icol,kx,ky);
             r++;
           }
           else
@@ -244,7 +244,6 @@ void convolution(int *inpixels,double *params,int *outpixels) {
             }
             else {  // otherwise it's a full kernel convolution 
               t += params[PARAM_COEFSTART+r]*inpixels[i+kx*icols+ky];
-              printf("ACTUAL PIXEL t %lf r %d i %d kx %d icols %d ky %d\n",t,r,i,kx,icols,ky);
               r++;
           }
         }
@@ -265,7 +264,6 @@ void convolution(int *inpixels,double *params,int *outpixels) {
         outpixels[i] = PIXELMAX;
       else
         outpixels[i] = t;
-      printf("%lf\n",t);
     }
   }
 }
