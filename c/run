@@ -1,6 +1,0 @@
-#!/bin/bash
-
-./main.o input/white10x10.txt 10 10 3 3 0 $1.txt
-./GetPixels.o 2 $1.png $1.txt 10 10
-
-
